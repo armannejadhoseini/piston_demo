@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
                 composable(Screen.Home.route) { Home(navController) }
                 composable(Screen.Lessons.route) { Lessons(navController) }
                 composable(Screen.Quizes.route) { Quizes() }
-                composable(Screen.More.route) { More() }
+                composable(Screen.More.route) { More(navController) }
                 composable("Lessons_menu") {  Lessons_menu("",navController)   }
             }
         }
@@ -87,10 +87,7 @@ class MainActivity : ComponentActivity() {
         Text(text = "quizes")
     }
 
-    @Composable
-    fun More() {
-        Text(text = "more")
-    }
+
 
 }
 
