@@ -31,6 +31,8 @@
         <entry key="app/src/main/res/drawable/back.xml" value="0.1935185185185185" />
         <entry key="app/src/main/res/drawable/ic_baseline_assessment_24.xml" value="0.23333333333333334" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.22974358974358974" />
+        <entry key="app/src/main/res/drawable/ticket_chat_shape_support.xml" value="0.17864583333333334" />
+        <entry key="app/src/main/res/drawable/ticket_chat_shape_user.xml" value="0.17864583333333334" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_banner.xml" value="0.12135416666666667" />
       </map>
     </option>
