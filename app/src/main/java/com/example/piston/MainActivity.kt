@@ -25,56 +25,61 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
-
+    val viewModel: ViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel: ViewModel by viewModels()
+
 
         setContent {
+                viewModel.setNavController(rememberNavController())
+            
             Ui()
+
         }
 
     }
+
     @Composable
     fun Ui() {
-        val navController = rememberNavController()
-        Scaffold(
-            bottomBar = {
-                BottomNavigation {
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val currentDestination = navBackStackEntry?.destination
 
-                    Constants.BottomNavigationItems.forEach { screen ->
-                        BottomNavigationItem(
-                            icon = { Icon(screen.icon, contentDescription = null) },
-                            label = { Text(screen.title) },
-                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                            onClick = {
-                                navController.navigate(screen.route) {
 
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+            Scaffold(
+                bottomBar = {
+                    BottomNavigation {
+                        val navBackStackEntry by viewModel.getNavController().currentBackStackEntryAsState()
+                        val currentDestination = navBackStackEntry?.destination
+
+                        Constants.BottomNavigationItems.forEach { screen ->
+                            BottomNavigationItem(
+                                icon = { Icon(screen.icon, contentDescription = null) },
+                                label = { Text(screen.title) },
+                                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                                onClick = {
+                                    viewModel.getNavController().navigate(screen.route) {
+
+                                        popUpTo(viewModel.getNavController().graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+
+                                        launchSingleTop = true
+
+                                        restoreState = true
                                     }
-
-                                    launchSingleTop = true
-
-                                    restoreState = true
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
+            ) {
+                NavHost(viewModel.getNavController() , startDestination = Screen.Home.route) {
+                    composable(Screen.Home.route) { Home(viewModel.getNavController()) }
+                    composable(Screen.Lessons.route) { Lessons(viewModel.getNavController()) }
+                    composable(Screen.Quizes.route) { Quizes() }
+                    composable(Screen.More.route) { More(viewModel.getNavController()) }
+                    composable("Lessons_menu") { Lessons_menu("", viewModel.getNavController()) }
+                }
             }
-        ) {
-            NavHost(navController, startDestination = Screen.Home.route) {
-                composable(Screen.Home.route) { Home(navController) }
-                composable(Screen.Lessons.route) { Lessons(navController) }
-                composable(Screen.Quizes.route) { Quizes() }
-                composable(Screen.More.route) { More(navController) }
-                composable("Lessons_menu") {  Lessons_menu("",navController)   }
-            }
-        }
     }
 
     @Composable
@@ -86,7 +91,6 @@ class MainActivity : ComponentActivity() {
     fun Quizes() {
         Text(text = "quizes")
     }
-
 
 
 }
