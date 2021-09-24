@@ -1,6 +1,7 @@
 package com.example.piston.ui.Quize
 
 import android.view.Gravity
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,18 +11,26 @@ import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.piston.AutoSizeText
 import com.example.piston.R
 import com.example.piston.ui.theme.textColor
+import com.google.accompanist.pager.ExperimentalPagerApi
 
+sealed class QuizPage(val name:String){
+    object PageOne:QuizPage("pageOne")
+    object PageTwo:QuizPage("pageTwo")
+}
 @Composable
-fun QuizPage() {
+fun QuizPageFirst(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +65,7 @@ fun QuizPage() {
         ) {
             Box(modifier = Modifier
                 .fillMaxSize()
-                .clickable { }){
+                .clickable { navController.navigate(QuizPage.PageTwo.name) }){
                 Row(modifier = Modifier.fillMaxSize()) {
                     Image(
                         painter = painterResource(id = R.drawable.base_test_img),
@@ -139,6 +148,21 @@ fun QuizPage() {
                 }
             }
 
+        }
+    }
+}
+
+@ExperimentalPagerApi
+@ExperimentalFoundationApi
+@Composable
+fun QuizPage() {
+    var navController = rememberNavController()
+    NavHost(navController = navController,startDestination = QuizPage.PageOne.name){
+        composable(route = QuizPage.PageOne.name){
+            QuizPageFirst(navController)
+        }
+        composable(route = QuizPage.PageTwo.name){
+            QuizPageTwo(navController)
         }
     }
 }

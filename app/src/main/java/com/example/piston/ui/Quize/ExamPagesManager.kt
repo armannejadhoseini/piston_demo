@@ -2,7 +2,10 @@ package com.example.piston
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,7 +25,10 @@ fun Manager() {
         modifier = Modifier.fillMaxSize()
     ) {
         composable(Pages.questionPage) {
-            ExamPage(navController)
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr ) {
+                ExamPage(navController)
+            }
+
         }
         composable(Pages.questionResultPage) {
             ExamResultPage(navController)
