@@ -26,6 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -399,7 +401,7 @@ private fun lerp(start: Float, stop: Float, fraction: Float): Float =
 
 @SuppressLint("RestrictedApi")
 @Composable
-fun AutoSizeText(text: String, modifier: Modifier, color: Color, gravity: Int = Gravity.CENTER) {
+fun AutoSizeText(text: String, modifier: Modifier, color: Color, gravity: Int = Gravity.CENTER,font:Int = R.font.shabnam,androidText:((AppCompatTextView)->Unit)? = null) {
     AndroidView(factory = {
         AppCompatTextView(it)
     }, modifier = modifier, update = {
@@ -408,5 +410,9 @@ fun AutoSizeText(text: String, modifier: Modifier, color: Color, gravity: Int = 
         it.layoutParams = ViewGroup.LayoutParams(-1, -1)
         it.gravity = gravity
         it.setTextColor(color.toArgb())
+        it.setTypeface(ResourcesCompat.getFont(it.context,font))
+        androidText?.let { andriodText->
+            androidText(it)
+        }
     })
 }

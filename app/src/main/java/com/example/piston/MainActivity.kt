@@ -1,15 +1,12 @@
 package com.example.piston
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -19,14 +16,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.room.Room
 import com.example.data.*
+import com.example.piston.ui.Quize.QuizPage
 import com.example.piston.ui.theme.ReadingPage
 import com.google.accompanist.pager.ExperimentalPagerApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
 
 
 class MainActivity : ComponentActivity() {
@@ -115,7 +108,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun Quizes() {
-        Text(text = "quizes")
+        QuizPage()
     }
 
 
