@@ -37,9 +37,7 @@ class MainActivity : ComponentActivity() {
     @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel.getListFromDb()
-
         setContent {
             Ui()
         }
