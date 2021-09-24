@@ -26,13 +26,91 @@
         <entry key="../../../../layout/compose-model-1632218421864.xml" value="0.1935185185185185" />
         <entry key="../../../../layout/compose-model-1632226173343.xml" value="0.19166666666666668" />
         <entry key="../../../../layout/compose-model-1632290636735.xml" value="0.18888888888888888" />
+        <entry key="../../../../layout/compose-model-1632303217636.xml" value="0.165" />
+        <entry key="../../../../layout/compose-model-1632366837195.xml" value="0.18611111111111112" />
+        <entry key="../../../../layout/compose-model-1632370288099.xml" value="0.18611111111111112" />
+        <entry key="../../../../layout/compose-model-1632370337264.xml" value="0.25" />
+        <entry key="../../../../layout/compose-model-1632375789982.xml" value="0.1" />
+        <entry key="../../../../layout/compose-model-1632375883677.xml" value="0.165" />
+        <entry key="../../../../layout/compose-model-1632376790017.xml" value="0.25" />
+        <entry key="../../../../layout/compose-model-1632378489819.xml" value="0.18333333333333332" />
+        <entry key="../../../../layout/compose-model-1632381490295.xml" value="0.18333333333333332" />
+        <entry key="../../../../layout/compose-model-1632385486692.xml" value="0.165" />
+        <entry key="../../../../layout/compose-model-1632473554013.xml" value="0.17685185185185184" />
         <entry key="app/src/main/res/drawable-v24/ic_banner_foreground.xml" value="0.23333333333333334" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.22974358974358974" />
         <entry key="app/src/main/res/drawable/back.xml" value="0.1935185185185185" />
+        <entry key="app/src/main/res/drawable/bottom_nav_shape.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/bottom_shape_board.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/btn_show_records_shape.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/button_shape_golden.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/car_injury_state_2.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/checked_user_answer.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/golden_stroke.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_add_member.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_arrow_back.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_back.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.18888888888888888" />
         <entry key="app/src/main/res/drawable/ic_baseline_assessment_24.xml" value="0.23333333333333334" />
+        <entry key="app/src/main/res/drawable/ic_bicycle.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_bike.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_bookmark_false.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_bookmark_true.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_boronz_medal.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_call.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_car.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_category.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_check.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_circle_info.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_close.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_copy.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_course.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_delete2.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_exam.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_finish_course_star1.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_finish_course_star2.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_finish_course_star3.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_golden_test.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_helicopter.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_info.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_last_course.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.22974358974358974" />
-        <entry key="app/src/main/res/drawable/ticket_chat_shape_support.xml" value="0.17864583333333334" />
-        <entry key="app/src/main/res/drawable/ticket_chat_shape_user.xml" value="0.17864583333333334" />
+        <entry key="app/src/main/res/drawable/ic_manabe.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_money.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_pause.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_phone.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_pin_person.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_plane.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_play.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_question_mark.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_rocket.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_save.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_score.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_search.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_select_item_true.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_send.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_silver_medal.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_support.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_tale.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_unsave.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_untitled_5svg.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_user.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_volume_off.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_volume_up.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/indicator_do_answer_shape.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/indicator_false_answer.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/linear_golden_test_selection.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/progress_style.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/round_button.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/seekbar_icon.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/select_all_corner.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/steper_raduis.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/toggle_btn_volume_game.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/top_game_background.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/viewpager_indicator_def.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/viewpager_indicator_selected.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/viewpager_selector.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_banner.xml" value="0.12135416666666667" />
       </map>
     </option>
