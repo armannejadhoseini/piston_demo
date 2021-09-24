@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
 
 
 
+    @ExperimentalFoundationApi
     @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +42,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    @ExperimentalFoundationApi
     @ExperimentalPagerApi
     @Composable
     fun Ui() {
@@ -108,6 +111,8 @@ class MainActivity : ComponentActivity() {
         Text(text = "home")
     }
 
+    @ExperimentalPagerApi
+    @ExperimentalFoundationApi
     @Composable
     fun Quizes() {
         QuizPage()

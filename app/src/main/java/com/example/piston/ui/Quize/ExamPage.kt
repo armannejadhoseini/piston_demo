@@ -108,7 +108,7 @@ fun TopLayout(modifier: Modifier, onFinish: () -> Unit) {
                 .fillMaxHeight()
                 .weight(4f), contentAlignment = Center
         ) {
-            TimerLayout(3700) {
+            TimerLayout(20*60*1000) {
                 onFinish()
             }
         }
