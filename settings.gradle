@@ -9,4 +9,4 @@ rootProject.name = "piston"
 include ':app'
 
 include ':data'
-include ':Domain'
+include ':domain'
