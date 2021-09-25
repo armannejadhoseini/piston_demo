@@ -73,12 +73,15 @@
         <entry key="app/src/main/res/drawable/ic_finish_course_star3.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_golden_test.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_helicopter.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_home.xml" value="0.1537037037037037" />
         <entry key="app/src/main/res/drawable/ic_info.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_last_course.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.22974358974358974" />
+        <entry key="app/src/main/res/drawable/ic_lock.xml" value="0.1537037037037037" />
         <entry key="app/src/main/res/drawable/ic_manabe.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_money.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_pause.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_person.xml" value="0.1537037037037037" />
         <entry key="app/src/main/res/drawable/ic_phone.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_pin_person.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_plane.xml" value="0.18333333333333332" />
@@ -88,9 +91,11 @@
         <entry key="app/src/main/res/drawable/ic_save.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_score.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_select_item_false.xml" value="0.1537037037037037" />
         <entry key="app/src/main/res/drawable/ic_select_item_true.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_send.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_silver_medal.xml" value="0.18888888888888888" />
+        <entry key="app/src/main/res/drawable/ic_simple_add.xml" value="0.1537037037037037" />
         <entry key="app/src/main/res/drawable/ic_support.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_tale.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_unsave.xml" value="0.18333333333333332" />

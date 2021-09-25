@@ -15,5 +15,4 @@ data class lecture_items(
     val page4: String,
     val page5: String,
     val page6: String,
-
     )
