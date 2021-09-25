@@ -8,5 +8,5 @@ dependencyResolutionManagement {
 rootProject.name = "piston"
 include ':app'
 
-include ':domain'
 include ':data'
+include ':Domain'

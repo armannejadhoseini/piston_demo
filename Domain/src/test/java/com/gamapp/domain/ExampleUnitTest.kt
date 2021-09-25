@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.gamapp.domain
 
 import org.junit.Test
 
