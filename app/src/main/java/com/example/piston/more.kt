@@ -110,32 +110,38 @@ fun subscriptionCard(price: String, title: String, body: String, color: Color, s
             .fillMaxWidth(size)
             .height(200.dp)
     ) {
-        Column(modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(modifier = Modifier.fillMaxWidth(),
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
                 text = price,
                 color = color,
                 textAlign = TextAlign.Center
             )
-            Text(modifier = Modifier.fillMaxWidth(),
+            Text(
+                modifier = Modifier.fillMaxWidth(),
                 text = title,
                 color = color,
                 textAlign = TextAlign.Center
             )
-            Text(modifier = Modifier.fillMaxWidth(),
+            Text(
+                modifier = Modifier.fillMaxWidth(),
                 text = body,
                 color = colorResource(id = R.color.gray),
                 textAlign = TextAlign.Center
             )
-            Button(modifier = Modifier
-                .background(
-                    color,
-                    shape = RoundedCornerShape(10.dp)
-                )
-                .fillMaxWidth(0.8F),
+            Button(
+                modifier = Modifier
+                    .background(
+                        color,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .fillMaxWidth(0.8F),
                 onClick = { /*TODO*/ },
 
-            ) {
+                ) {
                 Text(text = stringResource(id = R.string.txt_buy))
             }
         }
