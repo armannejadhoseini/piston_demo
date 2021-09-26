@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id'kotlin-kapt'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -21,6 +21,9 @@ android {
     }
 
     buildTypes {
+        customDebugTime{
+            debuggable true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -76,7 +79,7 @@ dependencies {
     //landescapist
     implementation "com.github.skydoves:landscapist-glide:1.3.6"
 
-
+    implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
 
 
 }
