@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id'kotlin-kapt'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -21,6 +21,9 @@ android {
     }
 
     buildTypes {
+        customDebugTime{
+            debuggable true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -74,7 +77,7 @@ dependencies {
 //    implementation 'com.vanpra.compose-viewpager:viewpager:0.1.2'
     implementation "com.google.accompanist:accompanist-pager:0.18.0"
 
-
+    implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
 
 
 }

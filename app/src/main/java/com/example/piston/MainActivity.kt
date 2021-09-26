@@ -1,6 +1,9 @@
 package com.example.piston
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -17,26 +20,67 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.room.Room
 import com.example.data.*
+import com.example.data.db.MyDatabase
+import com.example.data.db.RoomAppDatabase
+import com.example.data.entities.Board
+import com.example.data.entities.GuideLine
 import com.example.piston.ui.Quize.QuizPage
 import com.example.piston.ui.theme.ReadingPage
 import com.google.accompanist.pager.ExperimentalPagerApi
+import kotlinx.coroutines.GlobalScope
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 
 class MainActivity : ComponentActivity() {
     val viewModel: ViewModel by viewModels()
 
+    fun byteArrayToBitmap(data: IntArray): Bitmap? {
+        var array = ByteArray(data.size) {
+            return@ByteArray data[it].toByte()
+        }
+        var bitmap = BitmapFactory.decodeByteArray(array, 0, array.size)
+        return bitmap
+    }
+    fun Bitmap.toByteArray(): ByteArray {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        this.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        return byteArrayOutputStream.toByteArray()
+    }
 
+    fun bitmapToByteArray(bitmap:Bitmap): ByteArray {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        return byteArrayOutputStream.toByteArray()
+    }
 
     @ExperimentalFoundationApi
     @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.getListFromDb()
+
+        Executors.newSingleThreadExecutor().execute{
+            var database = MyDatabase(this)
+            var db = Room.databaseBuilder(
+                applicationContext,
+                RoomAppDatabase::class.java,
+                "room_app_database"
+            ).build()
+            var guideLine = database.getAllGuideLine()
+            var guideLines = ArrayList<GuideLine>()
+            guideLine.forEach {
+                guideLines.add(GuideLine(it.id,it.title,it.text,bitmapToByteArray(it.image)))
+            }
+            db.itemDao().insertAllGuideLine(guideLines)
+        }
+
         setContent {
             Ui()
         }
-
     }
 
 
