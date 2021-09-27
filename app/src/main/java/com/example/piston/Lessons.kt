@@ -45,7 +45,6 @@ val lessons_list = listOf(
 )
 
 
-
 @Composable
 fun Lessons(navController: NavController) {
 
@@ -68,9 +67,9 @@ fun Lessons(navController: NavController) {
         LazyColumn() {
             items(lessons_list) { item ->
                 if (item.id == 2) {
-                    itemsColumn(item = item, 80.dp, navController)
+                    ItemsColumn(item = item, 80.dp, navController)
                 } else {
-                    itemsColumn(item = item, 0.dp, navController)
+                    ItemsColumn(item = item, 0.dp, navController)
                 }
             }
         }
@@ -79,7 +78,8 @@ fun Lessons(navController: NavController) {
     }
 }
 @Composable
-fun itemsColumn(item: lessons_item, padding: Dp, navController: NavController) {
+fun ItemsColumn(item: lessons_item, padding: Dp, navController: NavController) {
+
 
     Card(
         modifier = Modifier
@@ -99,6 +99,7 @@ fun itemsColumn(item: lessons_item, padding: Dp, navController: NavController) {
                 .fillMaxWidth()
                 .height(200.dp)
         ) {
+
             Image(
                 modifier = Modifier
                     .width(180.dp)

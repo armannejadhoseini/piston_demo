@@ -75,6 +75,7 @@
         <entry key="app/src/main/res/drawable/ic_finish_course_star1.xml" value="0.18888888888888888" />
         <entry key="app/src/main/res/drawable/ic_finish_course_star2.xml" value="0.18888888888888888" />
         <entry key="app/src/main/res/drawable/ic_finish_course_star3.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/drawable/ic_golden_medal.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_golden_test.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_helicopter.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.1537037037037037" />
@@ -121,6 +122,10 @@
         <entry key="app/src/main/res/drawable/viewpager_indicator_selected.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/drawable/viewpager_selector.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_banner.xml" value="0.12135416666666667" />
+        <entry key="data/src/main/res/drawable/ic_category.xml" value="0.18333333333333332" />
+        <entry key="data/src/main/res/drawable/ic_course.xml" value="0.18333333333333332" />
+        <entry key="data/src/main/res/drawable/ic_exam.xml" value="0.18333333333333332" />
+        <entry key="data/src/main/res/drawable/ic_home.xml" value="0.18333333333333332" />
       </map>
     </option>
   </component>

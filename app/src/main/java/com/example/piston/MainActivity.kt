@@ -4,10 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavController
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
@@ -22,8 +28,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 
 
 class MainActivity : ComponentActivity() {
-    val viewModel: ViewModel by viewModels()
-
+    private val viewModel: ViewModel by viewModels()
 
 
     @ExperimentalPagerApi
@@ -32,6 +37,7 @@ class MainActivity : ComponentActivity() {
 
         viewModel.getTheoryListFromDb()
         viewModel.getPracticalListFromDb()
+
 
         setContent {
             Ui()
@@ -56,14 +62,18 @@ class MainActivity : ComponentActivity() {
                     navBackStackEntry?.destination?.route == "More"
                 ) {
                     BottomNavigation {
-                        val navBackStackEntry by navController
-                            .currentBackStackEntryAsState()
                         val currentDestination = navBackStackEntry?.destination
 
                         Constants.BottomNavigationItems.forEach { screen ->
                             BottomNavigationItem(
-                                icon = { Icon(screen.icon, contentDescription = null) },
-                                label = { Text(screen.title) },
+                                modifier = Modifier.background(colorResource(id = R.color.white_deep)),
+                                icon = {
+                                    Icon(
+                                        ImageVector.vectorResource(id = screen.icon),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(60.dp)
+                                    )
+                                },
                                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                                 onClick = {
                                     navController.navigate(screen.route) {
@@ -76,7 +86,10 @@ class MainActivity : ComponentActivity() {
 
                                         restoreState = true
                                     }
-                                }
+                                },
+                                selectedContentColor = colorResource(id = R.color.light_blue),
+                                unselectedContentColor = colorResource(id = R.color.light_gray)
+
                             )
                         }
                     }
@@ -85,7 +98,7 @@ class MainActivity : ComponentActivity() {
 
         ) {
             NavHost(navController = navController, startDestination = Screen.Home.route) {
-                composable(Screen.Home.route) { Home(navController) }
+                composable(Screen.Home.route) { Home() }
                 composable(Screen.Lessons.route) { Lessons(navController) }
                 composable(Screen.Quizes.route) { Quizes() }
                 composable(Screen.More.route) { More(navController) }
@@ -99,16 +112,14 @@ class MainActivity : ComponentActivity() {
                         LessonsList(
                             navController,
                             navBackStackEntry.arguments?.getString("courses_name"),
-                            viewModel.theory_list,
-                            viewModel.theory_images
+                            viewModel.theory_list
                         )
                     }
                     if (navBackStackEntry.arguments?.getString("courses_name") == "لیست دوره های عملی") {
                         LessonsList(
                             navController,
                             navBackStackEntry.arguments?.getString("courses_name"),
-                            viewModel.practical_list,
-                            viewModel.practical_images
+                            viewModel.practical_list
                         )
                     }
 
@@ -126,16 +137,15 @@ class MainActivity : ComponentActivity() {
                         ReadingPage(
                             navController,
                             it.arguments!!.getInt("index"),
-                            viewModel.theory_list,
-                            viewModel.theory_images[it.arguments!!.getInt("index")]
+                            viewModel.theory_list
+
                         )
                     }
                     if (it.arguments?.getInt("type") == 7) {
                         ReadingPage(
                             navController,
                             it.arguments!!.getInt("index"),
-                            viewModel.practical_list,
-                            viewModel.practical_images[it.arguments!!.getInt("index")]
+                            viewModel.practical_list
                         )
                     }
 
@@ -145,7 +155,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun Home(navController: NavController) {
+    fun Home() {
         Text(text = "home")
     }
 
@@ -153,8 +163,6 @@ class MainActivity : ComponentActivity() {
     fun Quizes() {
         Text(text = "quizes")
     }
-
-
 
 
 }

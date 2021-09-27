@@ -1,7 +1,6 @@
 package com.example.piston.ui.theme
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,10 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -25,28 +23,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.data.Constants
-import com.example.data.LectureList
+import com.example.myapplication.domain.LectureList
 import com.example.piston.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.skydoves.landscapist.glide.GlideImage
 
 
 @ExperimentalPagerApi
 @Composable
-fun ReadingPage(navController: NavController, index: Int, list: List<LectureList>, image: Int) {
+fun ReadingPage(navController: NavController, index: Int, list: List<LectureList>) {
 
     HorizontalPager(state = rememberPagerState(pageCount = 8)) {
         val page = this.currentPage
         Log.d("TAG", "ReadingPage: $page")
         Column() {
-            pageHeader(navController, page)
+            PageHeader(navController, page)
             if (page == 3 || page == 6) {
 
-                questionTab(image)
+                QuestionTab(index, list)
 
             } else {
-                LectureTab(index, list, page, image)
+                LectureTab(index, list, page)
             }
         }
 
@@ -55,7 +54,7 @@ fun ReadingPage(navController: NavController, index: Int, list: List<LectureList
 
 
 @Composable
-fun pageHeader(navController: NavController, page: Int) {
+fun PageHeader(navController: NavController, page: Int) {
     Row(
         modifier = Modifier
             .padding(bottom = 20.dp)
@@ -155,20 +154,21 @@ fun pageHeader(navController: NavController, page: Int) {
 }
 
 @Composable
-fun LectureTab(index: Int, list: List<LectureList>, page: Int, image: Int) {
+fun LectureTab(index: Int, list: List<LectureList>, page: Int) {
     Log.d("TAG", "LectureTab: $page")
     Column(
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
     ) {
-        Image(
+        GlideImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp),
-            painter = painterResource(id = image),
-            contentDescription = ""
+            imageModel = list[index].image,
+            contentScale = ContentScale.Inside
         )
+
         Row(modifier = Modifier.padding(vertical = 20.dp)) {
             IconButton(
                 modifier = Modifier
@@ -238,16 +238,16 @@ fun LectureTab(index: Int, list: List<LectureList>, page: Int, image: Int) {
 
 
 @Composable
-fun questionTab(imageList: Int) {
+fun QuestionTab(index: Int, list: List<LectureList>) {
 
 
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.End) {
-        Image(
+        GlideImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp),
-            painter = painterResource(id = imageList),
-            contentDescription = ""
+            imageModel = list[index].image,
+            contentScale = ContentScale.Inside
         )
 
         Text(
@@ -259,7 +259,7 @@ fun questionTab(imageList: Int) {
             fontSize = 15.sp
         )
 
-        listOf(1, 2, 3, 4).forEach {
+        listOf(1, 2, 3, 4).forEach { _ ->
 
             Card(
                 modifier = Modifier

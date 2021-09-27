@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "Board_table")
-data class BoardModel(
+data class BoardEntity(
     @PrimaryKey
     val id: Long,
     val type: String,

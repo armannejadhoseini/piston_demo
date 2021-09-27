@@ -2,7 +2,8 @@ package com.example.data
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.example.data.CourseListModel
+import com.example.myapplication.domain.CourseListModel
+import com.example.myapplication.domain.TheoryList
 
 @Dao
 interface listDao {

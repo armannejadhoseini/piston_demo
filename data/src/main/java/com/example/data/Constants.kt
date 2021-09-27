@@ -1,11 +1,6 @@
 package com.example.data
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.room.Room
+import com.example.data.Screen
 
 object Constants {
     val BottomNavigationItems = listOf(

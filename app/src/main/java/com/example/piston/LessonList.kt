@@ -17,23 +17,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.data.LectureList
-import com.example.data.Lessons_subitem
+import com.example.myapplication.domain.LectureList
+import com.skydoves.landscapist.glide.GlideImage
 
 
 @Composable
 fun LessonsList(
     navController: NavController,
     item_name: String?,
-    list: List<LectureList>,
-    imageList: List<Int>
+    list: List<LectureList>
 ) {
 
     Scaffold(
@@ -86,33 +84,17 @@ fun LessonsList(
             items(list) { item ->
                 if (item.id == list.size) {
                     SubMenu(
-                        item.id,
+                        item,
                         navController,
-                        item = Lessons_subitem
-                            (
-                            R.drawable.ic_silver_medal,
-                            "",
-                            R.drawable.ic_silver_medal
-                        ),
-                        item.title,
                         10.dp,
                         list.size -1,
-                        imageList[item.id-1]
                     )
                 } else {
                     SubMenu(
-                        item.id,
+                        item,
                         navController,
-                        item = Lessons_subitem
-                            (
-                            R.drawable.ic_silver_medal,
-                            "",
-                            R.drawable.ic_silver_medal
-                        ),
-                        item.title,
                         0.dp,
                         list.size -1,
-                        imageList[item.id-1]
                     )
                 }
             }
@@ -123,19 +105,16 @@ fun LessonsList(
 
 @Composable
 fun SubMenu(
-    index: Int,
+    item: LectureList,
     navController: NavController,
-    item: Lessons_subitem,
-    title: String,
     padding: Dp,
     type: Int,
-    image: Int
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate("reading_page/${index - 1}/${type}")
+                navController.navigate("reading_page/${item.id - 1}/${type}")
             }
             .padding(4.dp, 4.dp, 4.dp, padding)
             .height(100.dp),
@@ -155,10 +134,11 @@ fun SubMenu(
                         .fillMaxWidth()
                         .scale(0.6F)
                         .height(80.dp),
-                    imageVector = ImageVector.vectorResource(id = item.icon),
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_silver_medal),
                     contentDescription = "",
                     contentScale = ContentScale.FillBounds
                 )
+
                 Text(
                     text = "کوییز | دروس", modifier = Modifier
                         .fillMaxWidth()
@@ -172,19 +152,16 @@ fun SubMenu(
                     .fillMaxWidth(0.7F)
                     .align(Alignment.CenterVertically)
                     .height(30.dp),
-                text = title,
+                text = item.title,
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp,
                 color = colorResource(id = R.color.textColor_deep_blue),
             )
 
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth(0.9F)
-                    .padding(top = 15.dp)
-                    .height(70.dp),
-                painter = painterResource(id = image),
-                contentDescription = "",
+            GlideImage(modifier = Modifier.fillMaxWidth(0.9F)
+                .padding(top = 15.dp)
+                .height(70.dp),
+                imageModel = item.image,
                 contentScale = ContentScale.FillBounds
             )
 

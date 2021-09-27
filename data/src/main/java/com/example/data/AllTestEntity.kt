@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "exam_table")
-data class AllTestModel(
+data class AllTestEntity(
     @PrimaryKey
     val id: Long,
     val title: String,

@@ -1,12 +1,8 @@
 package com.example.data
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.graphics.vector.ImageVector
-
-sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
-    object Home : Screen("Home", "Home", Icons.Filled.Home)
-    object Lessons : Screen("Lessons", "Lessons", Icons.Filled.DateRange)
-    object Quizes : Screen("Quizes", "Quizes", Icons.Filled.Info)
-    object More : Screen("More", "More", Icons.Filled.Menu)
+sealed class Screen(val route: String, val title: String, val icon: Int) {
+    object Home : Screen("Home", "Home", R.drawable.ic_home)
+    object Lessons : Screen("Lessons", "Lessons", R.drawable.ic_course)
+    object Quizes : Screen("Quizes", "Quizes", R.drawable.ic_exam)
+    object More : Screen("More", "More", R.drawable.ic_category)
 }
