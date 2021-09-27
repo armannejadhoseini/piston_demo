@@ -1,42 +1,24 @@
 package com.example.piston
 
-import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import androidx.room.Room
 import com.example.data.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import org.intellij.lang.annotations.JdkConstants
-import kotlin.coroutines.coroutineContext
+
 
 val lessons_list = listOf(
     lessons_item(
@@ -86,7 +68,7 @@ fun Lessons(navController: NavController) {
         LazyColumn() {
             items(lessons_list) { item ->
                 if (item.id == 2) {
-                    itemsColumn(item = item, 30.dp, navController)
+                    itemsColumn(item = item, 80.dp, navController)
                 } else {
                     itemsColumn(item = item, 0.dp, navController)
                 }
@@ -96,7 +78,6 @@ fun Lessons(navController: NavController) {
 
     }
 }
-
 @Composable
 fun itemsColumn(item: lessons_item, padding: Dp, navController: NavController) {
 
@@ -152,3 +133,4 @@ fun itemsColumn(item: lessons_item, padding: Dp, navController: NavController) {
         }
     }
 }
+
