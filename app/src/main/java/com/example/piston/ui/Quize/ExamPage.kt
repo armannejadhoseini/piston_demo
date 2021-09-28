@@ -78,7 +78,6 @@ fun ExamPage(navController: NavHostController) {
             choose = it
         }, choose, count)
     }
-
 }
 
 @Composable

@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
-import com.example.data.LectureMapper_Imp
+import com.example.data.mappers.LectureMapper_Imp
 import com.example.data.RoomDatabase
 import com.example.myapplication.domain.LectureList
 import kotlinx.coroutines.*

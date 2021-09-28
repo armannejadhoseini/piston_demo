@@ -1,4 +1,4 @@
-package com.example.data
+package com.example.data.mappers
 
 import com.example.myapplication.domain.AllTestMapper
 import com.example.myapplication.domain.AllTestModel

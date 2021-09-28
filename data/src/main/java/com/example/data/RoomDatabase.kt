@@ -2,6 +2,9 @@ package com.example.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.data.entities.AllTestEntity
+import com.example.data.entities.CourseListEntity
+import com.example.data.entities.TheoryListEntity
 
 @Database(entities = arrayOf(
     AllTestEntity::class,

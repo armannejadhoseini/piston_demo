@@ -1,17 +1,23 @@
-package com.example.data
+package com.example.data.mappers
 
 import android.graphics.BitmapFactory
-import com.example.myapplication.domain.*
 import com.example.myapplication.domain.LectureList
+import com.example.myapplication.domain.LectureMapper
+import com.example.myapplication.domain.TestModel
+import com.example.myapplication.domain.TheoryList
+
 
 class LectureMapper_Imp : LectureMapper {
-    override fun PracticalListToLectureList(practicalList: List<CourseListModel>, testModelList: List<TestModel>): MutableList<LectureList> {
+    override fun PracticalListToLectureList(
+        practicalList: List<com.example.myapplication.domain.CourseListModel>,
+        testModelList: List<TestModel>
+    ): MutableList<LectureList> {
         val LectureList = mutableListOf<LectureList>()
-        practicalList.forEachIndexed  { index, item ->
+        practicalList.forEachIndexed { index, item ->
             LectureList.add(
                 LectureList(
                     item.id.toInt(),
-                    BitmapFactory.decodeByteArray(item.image,0,item.image!!.size),
+                    BitmapFactory.decodeByteArray(item.image, 0, item.image!!.size),
                     item.title,
                     item.page1,
                     String(item.page2),
@@ -39,13 +45,16 @@ class LectureMapper_Imp : LectureMapper {
         return LectureList
     }
 
-    override fun TheoryListToLectureList(theoryList: List<TheoryList>, testModelList: List<TestModel>): MutableList<LectureList> {
+    override fun TheoryListToLectureList(
+        theoryList: List<TheoryList>,
+        testModelList: List<TestModel>
+    ): MutableList<LectureList> {
         val LectureList = mutableListOf<LectureList>()
-        theoryList.forEachIndexed  { index, item ->
+        theoryList.forEachIndexed { index, item ->
             LectureList.add(
                 LectureList(
                     item.id.toInt(),
-                    BitmapFactory.decodeByteArray(item.image,0,item.image!!.size),
+                    BitmapFactory.decodeByteArray(item.image, 0, item.image!!.size),
                     item.title,
                     item.page1,
                     item.page2,
