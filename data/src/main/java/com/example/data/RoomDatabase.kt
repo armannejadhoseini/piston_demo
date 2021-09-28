@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 
 @Database(entities = arrayOf(
     AllTestEntity::class,
-    BoardEntity::class,
     CourseListEntity::class,
     TheoryListEntity::class,
 ), version = 2)

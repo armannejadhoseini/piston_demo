@@ -38,7 +38,6 @@ class MainActivity : ComponentActivity() {
         viewModel.getTheoryListFromDb()
         viewModel.getPracticalListFromDb()
 
-
         setContent {
             Ui()
         }
@@ -138,14 +137,13 @@ class MainActivity : ComponentActivity() {
                             navController,
                             it.arguments!!.getInt("index"),
                             viewModel.theory_list
-
                         )
                     }
                     if (it.arguments?.getInt("type") == 7) {
                         ReadingPage(
                             navController,
                             it.arguments!!.getInt("index"),
-                            viewModel.practical_list
+                            viewModel.practical_list,
                         )
                     }
 

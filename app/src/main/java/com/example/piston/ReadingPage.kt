@@ -1,5 +1,6 @@
 package com.example.piston.ui.theme
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,8 +15,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -40,10 +41,27 @@ fun ReadingPage(navController: NavController, index: Int, list: List<LectureList
         Log.d("TAG", "ReadingPage: $page")
         Column() {
             PageHeader(navController, page)
-            if (page == 3 || page == 6) {
-
-                QuestionTab(index, list)
-
+            if (page == 3) {
+                QuestionTab(
+                    list[index].quiz_title1,
+                    list[index].image,
+                    list[index].quiz1_answer1,
+                    list[index].quiz1_answer2,
+                    list[index].quiz1_answer3,
+                    list[index].quiz1_answer4,
+                    list[index].quiz1_true_answer
+                )
+            }
+            if (page == 6) {
+                QuestionTab(
+                    list[index].quiz_title2,
+                    list[index].image,
+                    list[index].quiz2_answer1,
+                    list[index].quiz2_answer2,
+                    list[index].quiz2_answer3,
+                    list[index].quiz2_answer4,
+                    list[index].quiz2_true_answer
+                )
             } else {
                 LectureTab(index, list, page)
             }
@@ -238,15 +256,22 @@ fun LectureTab(index: Int, list: List<LectureList>, page: Int) {
 
 
 @Composable
-fun QuestionTab(index: Int, list: List<LectureList>) {
-
+fun QuestionTab(
+    title: String,
+    image: Bitmap,
+    answer1: String,
+    answer2: String,
+    answer3: String,
+    answer4: String,
+    true_answer: Int
+) {
 
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.End) {
         GlideImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp),
-            imageModel = list[index].image,
+            imageModel = image,
             contentScale = ContentScale.Inside
         )
 
@@ -254,18 +279,17 @@ fun QuestionTab(index: Int, list: List<LectureList>) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 30.dp),
-            text = stringResource(id = R.string.ResourceTitle_txt),
+            text = title,
             color = colorResource(id = R.color.textColors),
             fontSize = 15.sp
         )
 
-        listOf(1, 2, 3, 4).forEach { _ ->
+        listOf(1, 2, 3, 4).forEach { item ->
 
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 20.dp, top = 4.dp, end = 20.dp, bottom = 4.dp)
-                    .height(50.dp),
+                    .padding(start = 20.dp, top = 4.dp, end = 20.dp, bottom = 4.dp),
                 shape = RoundedCornerShape(10.dp),
                 elevation = 4.dp
             ) {
@@ -274,16 +298,33 @@ fun QuestionTab(index: Int, list: List<LectureList>) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        modifier = Modifier.padding(end = 4.dp),
-                        text = "this dummy data",
+                        modifier = Modifier
+                            .padding(end = 4.dp)
+                            .padding(vertical = 10.dp)
+                            .fillMaxWidth(0.90F),
+                        text = when (item) {
+                            1 -> answer1
+                            2 -> answer2
+                            3 -> answer3
+                            4 -> answer4
+
+                            else -> answer1
+                        },
                         color = colorResource(
                             id = R.color.textColors
-                        )
+                        ),
+                        textAlign = TextAlign.End
                     )
                     RadioButton(
-                        modifier = Modifier.padding(end = 4.dp),
+                        modifier = Modifier
+                            .padding(end = 4.dp)
+                            .layoutId(item - 1),
                         selected = false,
-                        onClick = { /*TODO*/ })
+                        colors = RadioButtonDefaults.colors(colorResource(id = R.color.gray)),
+                        onClick = {
+
+                        })
+
                 }
             }
         }

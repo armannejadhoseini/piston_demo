@@ -4,10 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "exam_table")
+@Entity(tableName = "quiz_table")
 data class AllTestEntity(
     @PrimaryKey
     val id: Long,
+    val quiz_number : Long?,
     val title: String,
     val answer1: String,
     val answer2: String,
