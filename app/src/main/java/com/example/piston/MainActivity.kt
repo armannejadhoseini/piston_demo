@@ -33,8 +33,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.getListFromDb()
-
         setContent {
             Ui()
         }
@@ -56,7 +54,9 @@ class MainActivity : ComponentActivity() {
 
                     Constants.BottomNavigationItems.forEach { screen ->
                         BottomNavigationItem(
-                            icon = { Icon(screen.icon, contentDescription = null) },
+                            icon = {
+//                                Icon(screen.icon, contentDescription = null)
+                                   },
                             label = { Text(screen.title) },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                             onClick = {
@@ -87,11 +87,11 @@ class MainActivity : ComponentActivity() {
                         type = NavType.StringType
                     })
                 ) { navBackStackEntry ->
-                    PracticalLesson(
-                        navController,
-                        navBackStackEntry.arguments?.getString("courses_name"),
-                        viewModel.list
-                    )
+//                    PracticalLesson(
+//                        navController,
+//                        navBackStackEntry.arguments?.getString("courses_name"),
+//                        viewModel.list
+//                    )
                 }
                 composable(
                     "reading_page/{index}",
@@ -99,8 +99,7 @@ class MainActivity : ComponentActivity() {
                         type = NavType.IntType
                     })
                 ) {
-
-                    ReadingPage(navController, it.arguments!!.getInt("index"), viewModel.list)
+//                    ReadingPage(navController, it.arguments!!.getInt("index"), viewModel.list)
                 }
             }
         }
