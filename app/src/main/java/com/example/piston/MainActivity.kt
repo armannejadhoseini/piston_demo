@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: ViewModel by viewModels()
 
 
+    @ExperimentalFoundationApi
     @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +49,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    @ExperimentalFoundationApi
     @ExperimentalPagerApi
     @Composable
     fun Ui() {
@@ -160,9 +162,11 @@ class MainActivity : ComponentActivity() {
         Text(text = "home")
     }
 
+    @ExperimentalFoundationApi
+    @ExperimentalPagerApi
     @Composable
     fun Quizes() {
-        Text(text = "quizes")
+        QuizPage()
     }
 
 
