@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id'kotlin-kapt'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -21,6 +21,9 @@ android {
     }
 
     buildTypes {
+        customDebugTime{
+            debuggable true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -78,7 +81,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-beta01"
 
 
-
+    implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
 
 
 }
