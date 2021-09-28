@@ -1,6 +1,6 @@
 package com.example.data
 
-import com.example.data.Screen
+import com.example.data.entities.Screen
 
 object Constants {
     val BottomNavigationItems = listOf(

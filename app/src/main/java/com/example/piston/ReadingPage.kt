@@ -285,7 +285,9 @@ fun QuestionTab(
         )
 
         listOf(1, 2, 3, 4).forEach { item ->
-
+            var color by remember {
+                mutableStateOf(R.color.white)
+            }
             Card(
                 modifier = Modifier
                     .fillMaxWidth()

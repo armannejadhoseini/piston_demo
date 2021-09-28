@@ -1,4 +1,6 @@
-package com.example.data
+package com.example.data.entities
+
+import com.example.data.R
 
 sealed class Screen(val route: String, val title: String, val icon: Int) {
     object Home : Screen("Home", "Home", R.drawable.ic_home)

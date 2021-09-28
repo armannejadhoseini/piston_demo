@@ -1,11 +1,11 @@
-package com.example.data
+package com.example.data.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "theory_course_table")
-data class TheoryListEntity(
+@Entity(tableName = "practical_course_table")
+data class CourseListEntity(
     @PrimaryKey
     val id: Long,
     val type: Long?,
@@ -13,7 +13,8 @@ data class TheoryListEntity(
     val image: ByteArray?,
     val title: String,
     val page1: String,
-    val page2: String,
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    val page2: ByteArray,
     val page3: String,
     val page4: String,
     val page5: String,
