@@ -3,12 +3,13 @@ package com.example.piston.ui.theme
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -265,7 +266,9 @@ fun QuestionTab(
     answer4: String,
     true_answer: Int
 ) {
-
+    var ok by remember {
+        mutableStateOf(1)
+    }
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.End) {
         GlideImage(
             modifier = Modifier
@@ -283,13 +286,22 @@ fun QuestionTab(
             color = colorResource(id = R.color.textColors),
             fontSize = 15.sp
         )
-
-        listOf(1, 2, 3, 4).forEach { item ->
+        var color by remember {
+            mutableStateOf(R.color.white)
+        }
+        var selected by remember {
+            mutableStateOf(false)
+        }
+        var selectable by remember {
+            mutableStateOf(1)
+        }
+        listOf(1, 2, 3, 4).forEachIndexed { index, item ->
 
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 20.dp, top = 4.dp, end = 20.dp, bottom = 4.dp),
+                    .padding(start = 20.dp, top = 4.dp, end = 20.dp, bottom = 4.dp)
+                    .border(4.dp, colorResource(id =  color),shape = RoundedCornerShape(10.dp)),
                 shape = RoundedCornerShape(10.dp),
                 elevation = 4.dp
             ) {
@@ -319,10 +331,17 @@ fun QuestionTab(
                         modifier = Modifier
                             .padding(end = 4.dp)
                             .layoutId(item - 1),
-                        selected = false,
-                        colors = RadioButtonDefaults.colors(colorResource(id = R.color.gray)),
+                        selected = selected,
+                        colors = RadioButtonDefaults.colors(colorResource(id = color)),
                         onClick = {
-
+                            if (index == true_answer) {
+                                selected = true
+                                color = R.color.isDoneGreen
+                            }
+                            else {
+                                selected = true
+                                color = R.color.trikyRed
+                            }
                         })
 
                 }
@@ -331,6 +350,8 @@ fun QuestionTab(
     }
 
 }
+
+
 
 
 
