@@ -1,4 +1,4 @@
-package com.example.myapplication.domain
+package com.example.myapplication.domain.model
 
 
 data class AllTestModel(

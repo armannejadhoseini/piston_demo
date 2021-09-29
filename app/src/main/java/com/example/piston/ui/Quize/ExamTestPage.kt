@@ -26,12 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.domain.model.TestModel
 import com.example.piston.Pages.questionResultPage
 
 import com.google.accompanist.pager.*
@@ -42,11 +39,8 @@ import kotlin.random.Random
 
 @ExperimentalPagerApi
 @Composable
-fun ExamPage(navController: NavHostController) {
-    var list = listOf("amir", "ali", "jamal", "karim", "hossein")
-    var colorList = listOf(Color.Blue, Color.Green, Color.Red, Color.Cyan)
-    var count = 20
-    var state = rememberPagerState(pageCount = count)
+fun ExamTestPage(navController: NavHostController, list: List<TestModel>) {
+    var state = rememberPagerState(pageCount = list.size)
     var choose by remember {
         mutableStateOf(0)
     }
@@ -67,7 +61,9 @@ fun ExamPage(navController: NavHostController) {
         PagerLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(12f), state = state
+                .weight(12f),
+            state = state,
+            list
         ) {
             choose = it
         }
@@ -76,7 +72,7 @@ fun ExamPage(navController: NavHostController) {
                 state.animateScrollToPage(it)
             }
             choose = it
-        }, choose, count)
+        }, choose, list.size)
     }
 }
 
@@ -107,7 +103,7 @@ fun TopLayout(modifier: Modifier, onFinish: () -> Unit) {
                 .fillMaxHeight()
                 .weight(4f), contentAlignment = Center
         ) {
-            TimerLayout(20*60*1000) {
+            TimerLayout(20 * 60 * 1000) {
                 onFinish()
             }
         }
@@ -134,7 +130,12 @@ fun TopLayout(modifier: Modifier, onFinish: () -> Unit) {
 
 @ExperimentalPagerApi
 @Composable
-fun PagerLayout(modifier: Modifier, state: PagerState, onPageScroll: (Int) -> Unit) {
+fun PagerLayout(
+    modifier: Modifier,
+    state: PagerState,
+    list: List<TestModel>,
+    onPageScroll: (Int) -> Unit
+) {
     HorizontalPager(
         state,
         modifier = modifier,
@@ -173,7 +174,7 @@ fun PagerLayout(modifier: Modifier, state: PagerState, onPageScroll: (Int) -> Un
                 ),
                 elevation = 8.dp
             ) {
-                QuestionLayout(page)
+                QuestionLayout(page,list[page])
             }
 
         }
@@ -241,7 +242,7 @@ fun TimerLayout(timeInMils: Long = 190000, onFinish: () -> Unit) {
 
 @SuppressLint("RestrictedApi")
 @Composable
-fun QuestionLayout(page: Int) {
+fun QuestionLayout(index: Int, page: TestModel) {
     var imageList = listOf(
         R.drawable.image1,
         R.drawable.image10,
@@ -254,6 +255,8 @@ fun QuestionLayout(page: Int) {
         R.drawable.image20,
         R.drawable.image22,
     )
+    var answers = listOf(page.answer1,page.answer2,page.answer3,page.answer4)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -288,7 +291,7 @@ fun QuestionLayout(page: Int) {
                         .padding(4.dp), contentAlignment = Alignment.CenterStart
                 ) {
                     AutoSizeText(
-                        text = LoremIpsum(12).values.iterator().next(),
+                        text = page.title,
                         modifier = Modifier.fillMaxSize(),
                         color = Color.DarkGray,
                         gravity = Gravity.START
@@ -297,6 +300,7 @@ fun QuestionLayout(page: Int) {
                 var selectedAnswer by remember {
                     mutableStateOf(-1)
                 }
+
                 (0..3).forEach { index ->
                     var borderStroke = if (index == selectedAnswer) {
                         2.dp
@@ -337,7 +341,7 @@ fun QuestionLayout(page: Int) {
                                     )
                                 }
                                 AutoSizeText(
-                                    text = LoremIpsum(12).values.iterator().next(),
+                                    text = answers[index],
                                     modifier = Modifier.weight(1f),
                                     color = Color.Gray,
                                     gravity = Gravity.START
@@ -400,7 +404,14 @@ private fun lerp(start: Float, stop: Float, fraction: Float): Float =
 
 @SuppressLint("RestrictedApi")
 @Composable
-fun AutoSizeText(text: String, modifier: Modifier, color: Color, gravity: Int = Gravity.CENTER,font:Int = R.font.shabnam,androidText:((AppCompatTextView)->Unit)? = null) {
+fun AutoSizeText(
+    text: String,
+    modifier: Modifier,
+    color: Color,
+    gravity: Int = Gravity.CENTER,
+    font: Int = R.font.shabnam,
+    androidText: ((AppCompatTextView) -> Unit)? = null
+) {
     AndroidView(factory = {
         AppCompatTextView(it)
     }, modifier = modifier, update = {
@@ -409,8 +420,8 @@ fun AutoSizeText(text: String, modifier: Modifier, color: Color, gravity: Int = 
         it.layoutParams = ViewGroup.LayoutParams(-1, -1)
         it.gravity = gravity
         it.setTextColor(color.toArgb())
-        it.setTypeface(ResourcesCompat.getFont(it.context,font))
-        androidText?.let { andriodText->
+        it.setTypeface(ResourcesCompat.getFont(it.context, font))
+        androidText?.let { andriodText ->
             androidText(it)
         }
     })

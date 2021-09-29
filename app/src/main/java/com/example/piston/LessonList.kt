@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.myapplication.domain.LectureList
+import com.example.myapplication.domain.model.LectureList
 import com.skydoves.landscapist.glide.GlideImage
 
 

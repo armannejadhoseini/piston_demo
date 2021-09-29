@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.data.mappers.LectureMapper_Imp
 import com.example.data.db.RoomDatabase
-import com.example.data.entities.ExamPercentEntity
-import com.example.myapplication.domain.LectureList
+import com.example.data.entities.*
+import com.example.data.mappers.AllTestModelMapper_Imp
+import com.example.myapplication.domain.model.LectureList
+import com.example.myapplication.domain.model.TestModel
+import com.example.myapplication.domain.model.TestPercentEntity
 import kotlinx.coroutines.*
 
 class ViewModel(application: Application) : AndroidViewModel(application) {
-
     val db = Room.databaseBuilder(
         application.applicationContext,
         RoomDatabase::class.java,
@@ -20,41 +22,54 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
         .fallbackToDestructiveMigration()
         .build()
 
+
     private val LectureMapper_Imp = LectureMapper_Imp()
+    private val allTestModelMapper_Imp = AllTestModelMapper_Imp()
     var practical_list = listOf<LectureList>()
     var theory_list = listOf<LectureList>()
     var examPercentList = listOf<ExamPercentEntity>()
 
 
-    fun initDb(){
+    fun initDb() {
         getTheoryListFromDb()
         getPracticalListFromDb()
-        getExamPercentListFromDb()
     }
 
-    fun getExamPercentListFromDb(){
-        viewModelScope.launch(Dispatchers.IO) {
-            examPercentList = db.listDao().getExamPercentList()
-        }
+    suspend fun getExamListFromDb(number: Int): List<TestModel> {
+        var examList = db.listDao().getExamList(number.toLong())
+        return allTestModelMapper_Imp.AllTestEntityToTestModel(examList.toAllTestList())
+    }
+
+    suspend fun getQuizListFromDb(number: Int): List<TestModel> {
+        var quizList = db.listDao().getQuizList(number.toLong())
+        return allTestModelMapper_Imp.AllTestEntityToTestModel(quizList.toAllTestList())
+    }
+
+    suspend fun getExamPercentListFromDb(): List<TestPercentEntity> {
+        return db.listDao().getExamPercentList().toTestPercent()
+    }
+
+    suspend fun getQuizPercentListFromDb(): List<TestPercentEntity> {
+        return db.listDao().getQuizPercentList().toTestPercent()
     }
 
     fun getPracticalListFromDb() {
         viewModelScope.launch(Dispatchers.IO) {
             val tempList1 = db.listDao().getPracticalCourseList()
-            val tempList2 = db.listDao().getTestList(
-                intArrayOf(56, 76, 77, 98, 92, 225, 112, 57, 211, 43, 2, 221, 73, 70, 1, 244)
-            )
-            practical_list = LectureMapper_Imp.PracticalListToLectureList(tempList1, tempList2)
+//            val tempList2 = db.listDao().getTestList(
+//                intArrayOf(56, 76, 77, 98, 92, 225, 112, 57, 211, 43, 2, 221, 73, 70, 1, 244)
+//            )
+//            practical_list = LectureMapper_Imp.PracticalListToLectureList(tempList1, tempList2)
         }
     }
 
     fun getTheoryListFromDb() {
         viewModelScope.launch(Dispatchers.IO) {
             val tempList1 = db.listDao().getTheoryCourseList()
-            val tempList2 = db.listDao().getTestList(
-                intArrayOf(107, 201, 60, 198, 216, 84, 167, 245)
-            )
-            theory_list = LectureMapper_Imp.TheoryListToLectureList(tempList1, tempList2)
+//            val tempList2 = db.listDao().getTestList(
+//                intArrayOf(107, 201, 60, 198, 216, 84, 167, 245)
+//            )
+//            theory_list = LectureMapper_Imp.TheoryListToLectureList(tempList1, tempList2)
         }
     }
 }

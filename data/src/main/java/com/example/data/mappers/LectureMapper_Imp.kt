@@ -1,15 +1,16 @@
 package com.example.data.mappers
 
 import android.graphics.BitmapFactory
-import com.example.myapplication.domain.LectureList
-import com.example.myapplication.domain.LectureMapper
-import com.example.myapplication.domain.TestModel
-import com.example.myapplication.domain.TheoryList
+import com.example.myapplication.domain.model.LectureList
+import com.example.myapplication.domain.mapper.LectureMapper
+import com.example.myapplication.domain.model.TestModel
+import com.example.myapplication.domain.model.TheoryList
+import com.example.myapplication.domain.model.CourseListModel
 
 
 class LectureMapper_Imp : LectureMapper {
     override fun PracticalListToLectureList(
-        practicalList: List<com.example.myapplication.domain.CourseListModel>,
+        practicalList: List<CourseListModel>,
         testModelList: List<TestModel>
     ): MutableList<LectureList> {
         val LectureList = mutableListOf<LectureList>()

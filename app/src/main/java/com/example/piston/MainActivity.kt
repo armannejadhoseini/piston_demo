@@ -16,7 +16,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,7 +23,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.data.*
-import com.example.piston.ui.Quize.QuizPage
+import com.example.piston.ui.Quize.ExamQuizPageManger
+import com.example.piston.ui.Quize.FirstTestPage
 import com.example.piston.ui.theme.ReadingPage
 import com.google.accompanist.pager.ExperimentalPagerApi
 
@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         viewModel.initDb()
+
         setContent {
             Ui()
         }
@@ -100,7 +101,7 @@ class MainActivity : ComponentActivity() {
             NavHost(navController = navController, startDestination = Screen.Home.route) {
                 composable(Screen.Home.route) { Home() }
                 composable(Screen.Lessons.route) { Lessons(navController) }
-                composable(Screen.Quizes.route) { Quizes(navController,viewModel) }
+                composable(Screen.Quizes.route) { ExamQuiz() }
                 composable(Screen.More.route) { More(navController) }
                 composable(
                     "Lessons_menu/{courses_name}",
@@ -161,10 +162,9 @@ class MainActivity : ComponentActivity() {
     @ExperimentalFoundationApi
     @ExperimentalPagerApi
     @Composable
-    fun Quizes(navController: NavHostController, viewModel: ViewModel) {
-        QuizPage(navController,viewModel)
+    fun ExamQuiz() {
+        ExamQuizPageManger()
     }
-
 
 }
 

@@ -1,16 +1,15 @@
 package com.example.data.db
 
 import androidx.annotation.IntRange
-import androidx.annotation.LongDef
 import androidx.room.Dao
 import androidx.room.Query
 import com.example.data.entities.ExamEntity
 import com.example.data.entities.ExamPercentEntity
 import com.example.data.entities.QuizEntity
 import com.example.data.entities.QuizPercentEntity
-import com.example.myapplication.domain.CourseListModel
-import com.example.myapplication.domain.TestModel
-import com.example.myapplication.domain.TheoryList
+import com.example.myapplication.domain.model.CourseListModel
+import com.example.myapplication.domain.model.TestModel
+import com.example.myapplication.domain.model.TheoryList
 
 @Dao
 interface listDao {
@@ -20,8 +19,8 @@ interface listDao {
     @Query("SELECT * FROM theory_course_table")
     fun getTheoryCourseList(): List<TheoryList>
 
-    @Query("SELECT * FROM quiz_table WHERE id IN (:id)")
-    fun getTestList(id: IntArray): List<TestModel>
+//    @Query("SELECT * FROM quiz_table WHERE id IN (:id)")
+//    fun getTestList(id: IntArray): List<TestModel>
 
     @Query("SELECT * FROM exam_percent")
     fun getExamPercentList(): List<ExamPercentEntity>
