@@ -46,4 +46,8 @@ interface listDao {
         @IntRange(from = 1, to = 20)
         examNumber: Long
     ): List<ExamEntity>
+
+    
+
+
 }
