@@ -27,5 +27,4 @@ data class LectureList(
     val quiz2_answer3: String,
     val quiz2_answer4: String,
     val quiz2_true_answer: Int,
-
-    )
+)

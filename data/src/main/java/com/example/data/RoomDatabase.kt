@@ -2,15 +2,15 @@ package com.example.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.data.entities.AllTestEntity
-import com.example.data.entities.CourseListEntity
-import com.example.data.entities.TheoryListEntity
+import com.example.data.entities.*
 
 @Database(entities = arrayOf(
     AllTestEntity::class,
     CourseListEntity::class,
     TheoryListEntity::class,
-), version = 2)
+    ExamEntity::class,
+    QuizEntity::class
+), version = 2,exportSchema = false)
 abstract class RoomDatabase: RoomDatabase() {
     abstract fun listDao(): listDao
 }
