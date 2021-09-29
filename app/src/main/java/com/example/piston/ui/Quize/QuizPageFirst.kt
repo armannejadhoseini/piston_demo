@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.piston.AutoSizeText
 import com.example.piston.R
+import com.example.piston.ViewModel
 import com.example.piston.ui.theme.textColor
 import com.google.accompanist.pager.ExperimentalPagerApi
 
@@ -30,7 +31,7 @@ sealed class QuizPage(val name:String){
     object PageTwo:QuizPage("pageTwo")
 }
 @Composable
-fun QuizPageFirst(navController: NavHostController) {
+fun QuizPageFirst(navController: NavHostController, viewModel: ViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -155,14 +156,14 @@ fun QuizPageFirst(navController: NavHostController) {
 @ExperimentalPagerApi
 @ExperimentalFoundationApi
 @Composable
-fun QuizPage() {
+fun QuizPage(navController: NavHostController, viewModel: ViewModel) {
     var navController = rememberNavController()
     NavHost(navController = navController,startDestination = QuizPage.PageOne.name){
         composable(route = QuizPage.PageOne.name){
-            QuizPageFirst(navController)
+            QuizPageFirst(navController,viewModel)
         }
         composable(route = QuizPage.PageTwo.name){
-            QuizPageTwo(navController)
+            QuizPageTwo(navController,viewModel)
         }
     }
 }

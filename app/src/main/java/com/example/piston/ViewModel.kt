@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.data.mappers.LectureMapper_Imp
 import com.example.data.db.RoomDatabase
+import com.example.data.entities.ExamPercentEntity
 import com.example.myapplication.domain.LectureList
 import kotlinx.coroutines.*
 
@@ -22,6 +23,20 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
     private val LectureMapper_Imp = LectureMapper_Imp()
     var practical_list = listOf<LectureList>()
     var theory_list = listOf<LectureList>()
+    var examPercentList = listOf<ExamPercentEntity>()
+
+
+    fun initDb(){
+        getTheoryListFromDb()
+        getPracticalListFromDb()
+        getExamPercentListFromDb()
+    }
+
+    fun getExamPercentListFromDb(){
+        viewModelScope.launch(Dispatchers.IO) {
+            examPercentList = db.listDao().getExamPercentList()
+        }
+    }
 
     fun getPracticalListFromDb() {
         viewModelScope.launch(Dispatchers.IO) {
