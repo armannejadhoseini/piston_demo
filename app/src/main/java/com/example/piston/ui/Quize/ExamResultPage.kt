@@ -50,8 +50,16 @@ fun ExamResultPage(navController: NavHostController, correctAnswerCount: Int, pe
 fun ShowPercent(percent: Float, title: String, modifier: Modifier, color: Int) {
     Box(modifier = modifier) {
         CircularProgressIndicator(
+            progress = 1f,
+            modifier = Modifier.fillMaxSize(1f),
+            color = Color(240,240,255),
+            strokeWidth = 8.dp
+        )
+        CircularProgressIndicator(
             progress = (percent / 100f).coerceIn(0f, 1f),
-            modifier = Modifier.fillMaxSize(1f)
+            modifier = Modifier.fillMaxSize(1f),
+            color = colorResource(id = color),
+            strokeWidth = 7.dp
         )
         Column(
             modifier = Modifier
