@@ -1,5 +1,6 @@
 package com.example.piston
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -41,6 +42,8 @@ class MainActivity : ComponentActivity() {
 
         viewModel.getTheoryListFromDb()
         viewModel.getPracticalListFromDb()
+        viewModel.getAllBoardsListFromDb()
+
 
         setContent {
             Ui()
@@ -125,6 +128,10 @@ class MainActivity : ComponentActivity() {
                             navBackStackEntry.arguments?.getString("courses_name"),
                             viewModel.practical_list
                         )
+
+                    }
+                    if (navBackStackEntry.arguments?.getString("courses_name") == "لیست دروس") {
+                        BoardTable(list = viewModel.all_board_list, navController = navController)
                     }
 
                 }
