@@ -25,8 +25,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.data.*
-import com.example.piston.ui.theme.ReadingPage
 import com.google.accompanist.pager.ExperimentalPagerApi
+
 
 
 class MainActivity : ComponentActivity() {
@@ -103,10 +103,10 @@ class MainActivity : ComponentActivity() {
 
         ) {
             NavHost(navController = navController, startDestination = Screen.Home.route) {
-                composable(Screen.Home.route) { Home() }
+                composable(Screen.Home.route) { }
                 composable(Screen.Lessons.route) { Lessons(navController) }
-                composable(Screen.Quizes.route) { Quizes() }
-                composable(Screen.More.route) { More(navController) }
+                composable(Screen.Quizes.route) { }
+                composable(Screen.More.route) { }
                 composable(
                     "Lessons_menu/{courses_name}",
                     arguments = listOf(navArgument("courses_name") {
@@ -117,19 +117,19 @@ class MainActivity : ComponentActivity() {
                         LessonsList(
                             navController,
                             navBackStackEntry.arguments?.getString("courses_name"),
-                            viewModel.theory_list
+                            viewModel.getTheoryList()
                         )
                     }
                     if (navBackStackEntry.arguments?.getString("courses_name") == "لیست دوره های عملی") {
                         LessonsList(
                             navController,
                             navBackStackEntry.arguments?.getString("courses_name"),
-                            viewModel.practical_list
+                            viewModel.getPracticalList()
                         )
 
                     }
                     if (navBackStackEntry.arguments?.getString("courses_name") == "لیست دروس") {
-                        BoardTable(list = viewModel.all_board_list, navController = navController)
+                        BoardTable(list = viewModel.getAllBoards(), navController = navController)
                     }
 
                 }
@@ -146,41 +146,23 @@ class MainActivity : ComponentActivity() {
                         ReadingPage(
                             navController,
                             it.arguments!!.getInt("index"),
-                            viewModel.theory_list
+                            viewModel.getTheoryList()
                         )
                     }
                     if (it.arguments?.getInt("type") == 7) {
                         ReadingPage(
                             navController,
                             it.arguments!!.getInt("index"),
-                            viewModel.practical_list,
+                            viewModel.getPracticalList()
                         )
+
+                    }
+                    if (navBackStackEntry?.arguments?.getString("courses_name") == "لیست دروس") {
+                        BoardTable(list = viewModel.getAllBoards(), navController = navController)
                     }
 
                 }
             }
         }
     }
-
-    @Composable
-    fun Home() {
-        Text(text = "home")
-    }
-
-    @Composable
-    fun Quizes() {
-        Text(text = "quizes")
-    }
-
-
 }
-
-
-
-
-
-
-
-
-
-

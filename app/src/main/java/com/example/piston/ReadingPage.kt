@@ -1,4 +1,4 @@
-package com.example.piston.ui.theme
+package com.example.piston
 
 import android.graphics.Bitmap
 import android.util.Log
@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.data.Constants
 import com.example.myapplication.domain.LectureList
-import com.example.piston.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -40,7 +39,7 @@ fun ReadingPage(navController: NavController, index: Int, list: List<LectureList
     HorizontalPager(state = rememberPagerState(pageCount = 8)) {
         val page = this.currentPage
         Log.d("TAG", "ReadingPage: $page")
-        Column() {
+        Column {
             PageHeader(navController, page)
             if (page == 3) {
                 QuestionTab(
@@ -289,7 +288,7 @@ fun QuestionTab(
         var selectable by remember {
             mutableStateOf(true)
         }
-        var true_color by remember {
+        var trueColor by remember {
             mutableStateOf(R.color.white)
         }
         listOf(1, 2, 3, 4).forEachIndexed { index, item ->
@@ -305,7 +304,7 @@ fun QuestionTab(
                     .padding(start = 20.dp, top = 4.dp, end = 20.dp, bottom = 4.dp)
                     .border(
                         4.dp, when (item - 1) {
-                            true_answer -> colorResource(id = true_color)
+                            true_answer -> colorResource(id = trueColor)
                             else -> colorResource(id = color)
                         }, shape = RoundedCornerShape(10.dp)
                     ),
@@ -344,12 +343,12 @@ fun QuestionTab(
                                 selected = true
                                 color = R.color.isDoneGreen
                                 selectable = false
-                                true_color = R.color.isDoneGreen
+                                trueColor = R.color.isDoneGreen
                             } else {
                                 selected = true
                                 color = R.color.trikyRed
                                 selectable = false
-                                true_color = R.color.isDoneGreen
+                                trueColor = R.color.isDoneGreen
 
                             }
                         },
