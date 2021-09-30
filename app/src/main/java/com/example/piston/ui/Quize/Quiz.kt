@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.domain.model.TestModel
@@ -51,33 +52,41 @@ object ExamQuizPages {
     var AdvanceResultName = "advanced_result_page"
 }
 
+
 @ExperimentalPagerApi
 @ExperimentalFoundationApi
 @Composable
-fun ExamQuizPageManger() {
+fun ExamQuizPageManger(showBottom: (Boolean) -> Unit) {
     var navController = rememberNavController()
-    NavHost(navController = navController,
-        startDestination = FirstTestPageName) {
-        composable(route = FirstTestPageName){
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    if (navBackStackEntry?.destination?.route != FirstTestPageName) showBottom(false)
+    else showBottom(true)
+    NavHost(
+        navController = navController,
+        startDestination = FirstTestPageName
+    ) {
+        composable(route = FirstTestPageName) {
             FirstTestPage(navController)
         }
-        composable(route = ElementaryTestListName){
+        composable(route = ElementaryTestListName) {
             ElementaryTestList {
                 navController.navigate("$ElementaryTestsName/$it")
             }
         }
-        composable(route = AdvanceTestListName){
+        composable(route = AdvanceTestListName) {
             AdvancedTestList {
                 navController.navigate("$AdvanceTestsName/$it")
             }
         }
-        composable(route = "$ElementaryTestsName/{number}",
-        arguments = listOf(navArgument("number"){
-            type = NavType.IntType
-        })){
-            ElementaryTestsPage(navController,it.arguments?.getInt("number")!!)
+        composable(
+            route = "$ElementaryTestsName/{number}",
+            arguments = listOf(navArgument("number") {
+                type = NavType.IntType
+            })
+        ) {
+            ElementaryTestsPage(navController, it.arguments?.getInt("number")!!)
         }
-        composable(AdvanceTestsName){
+        composable(AdvanceTestsName) {
 
         }
     }
@@ -298,7 +307,7 @@ fun AdvancedTestList(onPageChange: (Int) -> Unit) {
     }
     var viewModel = viewModel(ViewModel::class.java)
     LaunchedEffect(key1 = "start") {
-        launch(Dispatchers.IO){
+        launch(Dispatchers.IO) {
             list = viewModel.getQuizPercentListFromDb() as ArrayList<TestPercentEntity>
         }
     }
@@ -313,7 +322,7 @@ fun ElementaryTestList(onPageChange: (Int) -> Unit) {
     }
     var viewModel = viewModel(ViewModel::class.java)
     LaunchedEffect(key1 = "start") {
-        this.launch(Dispatchers.IO){
+        this.launch(Dispatchers.IO) {
             list = viewModel.getExamPercentListFromDb() as ArrayList<TestPercentEntity>
         }
     }
@@ -323,16 +332,16 @@ fun ElementaryTestList(onPageChange: (Int) -> Unit) {
 @ExperimentalPagerApi
 @Composable
 fun ElementaryTestsPage(navController: NavHostController, number: Int) {
-    var list by remember{
+    var list by remember {
         mutableStateOf(ArrayList<TestModel>())
     }
     var viewModel = viewModel(ViewModel::class.java)
-    LaunchedEffect(key1 = "start"){
-        this.launch(Dispatchers.IO){
+    LaunchedEffect(key1 = "start") {
+        this.launch(Dispatchers.IO) {
             list = viewModel.getExamListFromDb(number) as ArrayList<TestModel>
         }
     }
-    ExamTestPage(navController,list)
+    ExamTestPage(navController, list)
 }
 
 @Composable

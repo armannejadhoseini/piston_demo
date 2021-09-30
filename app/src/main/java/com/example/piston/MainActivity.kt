@@ -33,6 +33,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 class MainActivity : ComponentActivity() {
     private val viewModel: ViewModel by viewModels()
     val KEY_ROUTE = "something"
+
     @ExperimentalFoundationApi
     @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,11 +47,7 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    @Composable
-    public fun currentRoute(navController: NavHostController): String? {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        return navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-    }
+
 
     @ExperimentalFoundationApi
     @ExperimentalPagerApi
@@ -58,9 +55,11 @@ class MainActivity : ComponentActivity() {
     fun Ui() {
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val (showBottom, showBottomClick) = remember {
+            mutableStateOf(true)
+        }
 
         Scaffold(
-
             bottomBar = {
                 if (
                     navBackStackEntry?.destination?.route == "Home" ||
@@ -68,46 +67,50 @@ class MainActivity : ComponentActivity() {
                     navBackStackEntry?.destination?.route == "Quizes" ||
                     navBackStackEntry?.destination?.route == "More"
                 ) {
-                    BottomNavigation {
-                        val currentDestination = navBackStackEntry?.destination
+                    if (showBottom)
+                        BottomNavigation {
+                            val currentDestination = navBackStackEntry?.destination
 
-                        Constants.BottomNavigationItems.forEach { screen ->
-                            BottomNavigationItem(
-                                modifier = Modifier.background(colorResource(id = R.color.white_deep)),
-                                icon = {
-                                    Icon(
-                                        ImageVector.vectorResource(id = screen.icon),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(60.dp)
-                                    )
-                                },
-                                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                                onClick = {
-                                    navController.navigate(screen.route) {
+                            Constants.BottomNavigationItems.forEach { screen ->
+                                BottomNavigationItem(
+                                    modifier = Modifier.background(colorResource(id = R.color.white_deep)),
+                                    icon = {
+                                        Icon(
+                                            ImageVector.vectorResource(id = screen.icon),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(60.dp)
+                                        )
+                                    },
+                                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                                    onClick = {
+                                        navController.navigate(screen.route) {
 
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+
+                                            launchSingleTop = true
+
+                                            restoreState = true
                                         }
+                                    },
+                                    selectedContentColor = colorResource(id = R.color.light_blue),
+                                    unselectedContentColor = colorResource(id = R.color.light_gray)
 
-                                        launchSingleTop = true
-
-                                        restoreState = true
-                                    }
-                                },
-                                selectedContentColor = colorResource(id = R.color.light_blue),
-                                unselectedContentColor = colorResource(id = R.color.light_gray)
-
-                            )
+                                )
+                            }
                         }
-                    }
                 }
             }
-
         ) {
             NavHost(navController = navController, startDestination = Screen.Home.route) {
                 composable(Screen.Home.route) { Home() }
                 composable(Screen.Lessons.route) { Lessons(navController) }
-                composable(Screen.Quizes.route) { ExamQuiz() }
+                composable(Screen.Quizes.route) {
+                    ExamQuiz {
+                        showBottomClick(it)
+                    }
+                }
                 composable(Screen.More.route) { More(navController) }
                 composable(
                     "Lessons_menu/{courses_name}",
@@ -168,8 +171,8 @@ class MainActivity : ComponentActivity() {
     @ExperimentalFoundationApi
     @ExperimentalPagerApi
     @Composable
-    fun ExamQuiz() {
-        ExamQuizPageManger()
+    fun ExamQuiz(showBottomBar: (Boolean) -> Unit) {
+        ExamQuizPageManger(showBottomBar)
     }
 
 }
