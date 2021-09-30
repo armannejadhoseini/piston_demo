@@ -64,7 +64,7 @@ fun Lessons(navController: NavController) {
         }
     ) {
 
-        LazyColumn() {
+        LazyColumn {
             items(lessons_list) { item ->
                 if (item.id == 2) {
                     ItemsColumn(item = item, 80.dp, navController)

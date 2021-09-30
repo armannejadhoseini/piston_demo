@@ -1,5 +1,6 @@
 package com.example.piston
 
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.*
 import androidx.compose.foundation.background
@@ -14,23 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.data.Constants
 import com.example.myapplication.domain.BoardList
 import com.skydoves.landscapist.glide.GlideImage
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 @ExperimentalFoundationApi
@@ -39,10 +34,7 @@ fun BoardTable(list: List<BoardList>, navController: NavController) {
     var boardList by remember {
         mutableStateOf(list)
     }
-    var topNav by remember {
-        mutableStateOf(2)
-    }
-    Column() {
+    Column {
         Row(
             modifier = Modifier
                 .height(40.dp)
@@ -77,48 +69,7 @@ fun BoardTable(list: List<BoardList>, navController: NavController) {
                     .height(40.dp),
                 horizontalArrangement = Arrangement.End
             ) {
-
-                if (topNav == 1) {
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(30.dp)) {
-
-                        DropdownMenu(
-                            modifier = Modifier
-                                .fillMaxWidth(0.9F)
-                                .height(30.dp),
-                            expanded = false,
-                            onDismissRequest = { /*TODO*/ }) {
-                            Constants.dropDownItems.forEach { item ->
-                                DropdownMenuItem(onClick = { /*TODO*/ }) {
-                                    Text(text = item)
-                                }
-                            }
-                        }
-                        IconButton(
-                            modifier = Modifier
-                                .width(30.dp)
-                                .height(30.dp),
-                            onClick = {
-                                topNav = 2
-                            },
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .width(20.dp)
-                                    .padding(start = 2.dp)
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(color = colorResource(id = R.color.courcesBlue))
-                                    .height(20.dp),
-                                imageVector = ImageVector.vectorResource(id = R.drawable.ic_close),
-                                contentDescription = "",
-                                tint = Color.Unspecified
-                            )
-                        }
-                    }
-                }
-                if (topNav == 2) {
-                    var text_input by remember {
+                    var textInput by remember {
                         mutableStateOf("  ")
                     }
                     Row(
@@ -132,10 +83,10 @@ fun BoardTable(list: List<BoardList>, navController: NavController) {
                                 .fillMaxWidth(0.9F)
                                 .height(30.dp)
                                 .padding(end = 2.dp, top = 2.dp),
-                            value = text_input,
+                            value = textInput,
                             onValueChange = {
-                                text_input = it
-                                boardList = dbTask(text_input, list)
+                                textInput = it
+                                boardList = dbTask(textInput, boardList)
                             },
                             cursorBrush = SolidColor(colorResource(id = R.color.textColor_deep_blue)),
                             decorationBox = { innerTextField ->
@@ -177,14 +128,14 @@ fun BoardTable(list: List<BoardList>, navController: NavController) {
                         }
                     }
 
-                }
+
             }
         }
 
 
         LazyVerticalGrid(cells = GridCells.Adaptive(128.dp)) {
             items(boardList.size) { item ->
-                BoardItem(list[item])
+                BoardItem(boardList[item])
             }
         }
     }
@@ -195,7 +146,7 @@ fun BoardTable(list: List<BoardList>, navController: NavController) {
 fun BoardItem(item: BoardList) {
 
 
-    Column() {
+    Column {
         GlideImage(
             modifier = Modifier
                 .width(100.dp)
@@ -210,13 +161,14 @@ fun BoardItem(item: BoardList) {
                 .padding(horizontal = 10.dp),
             text = item.title,
             color = colorResource(id = R.color.textColor_deep_blue),
-            fontSize = 10.sp
+            fontSize = 10.sp,
+            textAlign = TextAlign.Center
         )
     }
 }
 
 fun dbTask(text: String, list: List<BoardList>): List<BoardList> {
-    var matchedItems = mutableListOf<BoardList>()
+    val matchedItems = mutableListOf<BoardList>()
     list.forEach { item ->
         if (item.title.contains(text)) {
             matchedItems.add(item)
