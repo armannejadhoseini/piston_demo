@@ -79,8 +79,6 @@ fun LessonsList(
         }) {
 
         LazyColumn {
-
-
             items(list) { item ->
                 if (item.id == list.size) {
                     SubMenu(

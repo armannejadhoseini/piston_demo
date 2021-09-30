@@ -2,10 +2,7 @@ package com.example.data
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.example.myapplication.domain.AllTestModel
-import com.example.myapplication.domain.CourseListModel
-import com.example.myapplication.domain.TestModel
-import com.example.myapplication.domain.TheoryList
+import com.example.myapplication.domain.*
 
 @Dao
 interface listDao {
@@ -19,5 +16,7 @@ interface listDao {
     @Query("SELECT * FROM quiz_table WHERE id IN (:id)")
     fun getTestList(id: IntArray): List<TestModel>
 
+    @Query("SELECT * FROM Board_table")
+    fun getAllBoradsList(): List<BoardModel>
 
 }

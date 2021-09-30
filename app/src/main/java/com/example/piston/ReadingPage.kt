@@ -133,7 +133,8 @@ fun PageHeader(navController: NavController, page: Int) {
                             .width(15.dp)
                             .height(15.dp),
                         text = "$index",
-                        color = colorResource(id = R.color.white)
+                        fontSize = 1.sp,
+                        color = colorResource(id = R.color.trikyRed)
                     )
                 }
             }
@@ -266,9 +267,6 @@ fun QuestionTab(
     answer4: String,
     true_answer: Int
 ) {
-    var ok by remember {
-        mutableStateOf(1)
-    }
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.End) {
         GlideImage(
             modifier = Modifier
@@ -284,24 +282,33 @@ fun QuestionTab(
                 .padding(horizontal = 20.dp, vertical = 30.dp),
             text = title,
             color = colorResource(id = R.color.textColors),
-            fontSize = 15.sp
+            fontSize = 15.sp,
+            textAlign = TextAlign.End
         )
-        var color by remember {
+
+        var selectable by remember {
+            mutableStateOf(true)
+        }
+        var true_color by remember {
             mutableStateOf(R.color.white)
         }
-        var selected by remember {
-            mutableStateOf(false)
-        }
-        var selectable by remember {
-            mutableStateOf(1)
-        }
         listOf(1, 2, 3, 4).forEachIndexed { index, item ->
-
+            var color by remember {
+                mutableStateOf(R.color.white)
+            }
+            var selected by remember {
+                mutableStateOf(false)
+            }
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, top = 4.dp, end = 20.dp, bottom = 4.dp)
-                    .border(4.dp, colorResource(id =  color),shape = RoundedCornerShape(10.dp)),
+                    .border(
+                        4.dp, when (item - 1) {
+                            true_answer -> colorResource(id = true_color)
+                            else -> colorResource(id = color)
+                        }, shape = RoundedCornerShape(10.dp)
+                    ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = 4.dp
             ) {
@@ -332,24 +339,30 @@ fun QuestionTab(
                             .padding(end = 4.dp)
                             .layoutId(item - 1),
                         selected = selected,
-                        colors = RadioButtonDefaults.colors(colorResource(id = color)),
                         onClick = {
                             if (index == true_answer) {
                                 selected = true
                                 color = R.color.isDoneGreen
-                            }
-                            else {
+                                selectable = false
+                                true_color = R.color.isDoneGreen
+                            } else {
                                 selected = true
                                 color = R.color.trikyRed
+                                selectable = false
+                                true_color = R.color.isDoneGreen
+
                             }
-                        })
+                        },
+                        enabled = selectable
+                    )
 
                 }
             }
         }
     }
-
 }
+
+
 
 
 

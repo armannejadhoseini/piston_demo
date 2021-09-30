@@ -1,9 +1,11 @@
 package com.example.piston
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
@@ -31,12 +33,15 @@ class MainActivity : ComponentActivity() {
     private val viewModel: ViewModel by viewModels()
 
 
+    @ExperimentalFoundationApi
     @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel.getTheoryListFromDb()
         viewModel.getPracticalListFromDb()
+        viewModel.getAllBoardsListFromDb()
+
 
         setContent {
             Ui()
@@ -45,6 +50,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    @ExperimentalFoundationApi
     @ExperimentalPagerApi
     @Composable
     fun Ui() {
@@ -120,6 +126,10 @@ class MainActivity : ComponentActivity() {
                             navBackStackEntry.arguments?.getString("courses_name"),
                             viewModel.practical_list
                         )
+
+                    }
+                    if (navBackStackEntry.arguments?.getString("courses_name") == "لیست دروس") {
+                        BoardTable(list = viewModel.all_board_list, navController = navController)
                     }
 
                 }
