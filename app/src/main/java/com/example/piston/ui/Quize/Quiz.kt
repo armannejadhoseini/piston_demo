@@ -14,7 +14,6 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -44,7 +43,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 object ExamQuizPages {
     var FirstTestPageName = "first_test_page"
@@ -385,7 +383,7 @@ fun ElementaryTestResult(navController: NavHostController,quizResult: QuizResult
     var percent = correctAnswerCount / answers.size.toFloat()
     percent *= 100
     Box(modifier = Modifier.fillMaxSize()) {
-        ExamResultPage(navController = navController)
+        ExamResultPage(navController = navController,correctAnswerCount,percent)
     }
 }
 

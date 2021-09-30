@@ -5,28 +5,82 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.piston.ui.theme.textColor
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 @Composable
-fun ExamResultPage(navController: NavHostController) {
+fun ExamResultPage(navController: NavHostController, correctAnswerCount: Int, percent: Float) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar(
-                modifier = Modifier.height(60.dp).padding(start = 8.dp,end = 8.dp,top=4.dp,bottom = 4.dp),
+                modifier = Modifier
+                    .height(60.dp)
+                    .padding(
+                        start = 8.dp,
+                        end = 8.dp,
+                        top = 4.dp,
+                        bottom = 4.dp
+                    ),
                 stringResource(id = R.string.TestResulteTitle)
+            )
+            Body(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                6, 20f
             )
         }
     }
 }
+
+@Composable
+fun ShowPercent(percent: Float, title: String, modifier: Modifier, color: Int) {
+    Box(modifier = modifier) {
+        CircularProgressIndicator(
+            progress = (percent / 100f).coerceIn(0f, 1f),
+            modifier = Modifier.fillMaxSize(1f)
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize(sqrt(2f) / 2)
+                .align(Alignment.Center)
+        ) {
+            AutoSizeText(
+                text = "${(percent.coerceIn(0f, 100f)).roundToInt()}%", modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f), color = colorResource(
+                    id = color
+                )
+            ) {
+                it.setLines(1)
+            }
+            AutoSizeText(
+                text = title, modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(2f), color = colorResource(
+                    id = color
+                )
+            ) {
+                it.setLines(1)
+            }
+
+        }
+    }
+}
+
 
 @Composable
 fun TextIcon(
@@ -99,6 +153,89 @@ fun TopBar(modifier: Modifier, text: String) {
             color = textColor
         )
 
+    }
+}
+
+data class Result(val color: Int, val title1: Int, val title2: Int, val bodyText: Int)
+
+@Composable
+fun Body(modifier: Modifier, correctAnswerCount: Int, percent: Float) {
+    var result = when (percent) {
+        in 0f..50f -> {
+            Result(
+                R.color.trikyRed,
+                R.string.test_result_title_weak,
+                R.string.test_result_title2_weak,
+                R.string.test_result_body_weak
+            )
+        }
+        in 51f..79f -> {
+            Result(
+                R.color.golden,
+                R.string.test_result_title_medium,
+                R.string.test_result_title2_medium,
+                R.string.test_result_body_medium
+            )
+        }
+        in 80f..100f -> {
+            Result(
+                R.color.light_green,
+                R.string.test_result_title_good,
+                R.string.test_result_title2_good,
+                R.string.test_result_body_good
+            )
+        }
+        else -> null
+    }
+    Column(modifier = modifier) {
+        ShowPercent(
+            percent = percent, title = "$correctAnswerCount" + " درست از 30", modifier = Modifier
+                .fillMaxWidth(0.6f)
+                .aspectRatio(1f)
+                .align(CenterHorizontally),
+            result!!.color
+        )
+        ShowResultText(
+            Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(start = 16.dp, end = 16.dp),
+            result
+        )
+    }
+}
+
+@Composable
+fun ShowResultText(modifier: Modifier, result: Result) {
+    Column(modifier = modifier) {
+        R.string.test_result_title2_weak
+        AutoSizeText(
+            text = stringResource(id = result.title1), modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(), color = colorResource(
+                id = result.color
+            )
+        ) {
+            it.setLines(1)
+        }
+        AutoSizeText(
+            text = stringResource(id = result.title2), modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(), color = colorResource(
+                id = R.color.textColor_deep_blue
+            )
+        ) {
+            it.setLines(1)
+        }
+        AutoSizeText(
+            text = stringResource(
+                id = result.bodyText
+            ), modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(), color = colorResource(
+                id = R.color.textColors
+            )
+        )
     }
 }
 
