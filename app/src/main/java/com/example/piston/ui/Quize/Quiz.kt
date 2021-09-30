@@ -328,7 +328,7 @@ fun ElementaryTestsPage(navController: NavHostController, number: Int) {
     }
     var viewModel = viewModel(ViewModel::class.java)
     LaunchedEffect(key1 = "start"){
-        launch(Dispatchers.IO){
+        this.launch(Dispatchers.IO){
             list = viewModel.getExamListFromDb(number) as ArrayList<TestModel>
         }
     }

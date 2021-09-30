@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.os.CountDownTimer
 import android.view.Gravity
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -23,24 +25,32 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.myapplication.domain.model.TestModel
-import com.example.piston.Pages.questionResultPage
+
 
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 import kotlin.random.Random
+
+
 
 @ExperimentalPagerApi
 @Composable
 fun ExamTestPage(navController: NavHostController, list: List<TestModel>) {
     var state = rememberPagerState(pageCount = list.size)
+    var correctAnswer by remember{
+        mutableStateOf(false)
+    }
     var choose by remember {
         mutableStateOf(0)
     }
@@ -56,14 +66,15 @@ fun ExamTestPage(navController: NavHostController, list: List<TestModel>) {
                 .fillMaxWidth()
                 .weight(1.2f)
         ) {
-            navController.navigate(questionResultPage)
+
         }
         PagerLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(12f),
             state = state,
-            list
+            list,
+            correctAnswer
         ) {
             choose = it
         }
@@ -78,7 +89,6 @@ fun ExamTestPage(navController: NavHostController, list: List<TestModel>) {
 
 @Composable
 fun TopLayout(modifier: Modifier, onFinish: () -> Unit) {
-    var context = LocalContext.current
     Row(
         modifier = modifier
     ) {
@@ -128,24 +138,44 @@ fun TopLayout(modifier: Modifier, onFinish: () -> Unit) {
     }
 }
 
+fun <T> List<T>.copy(): ArrayList<T> {
+    var list = ArrayList<T>()
+    this.forEach {
+        list.add(it)
+    }
+    return list
+}
+
+fun initSelectedList(size: Int): ArrayList<Int> {
+    var list = ArrayList<Int>()
+    (0 until size).forEach {
+        list.add(-1)
+    }
+    return list
+}
+
 @ExperimentalPagerApi
 @Composable
 fun PagerLayout(
     modifier: Modifier,
     state: PagerState,
     list: List<TestModel>,
+    showCorrectAnswer: Boolean,
     onPageScroll: (Int) -> Unit
 ) {
+    var selectedList by remember {
+        mutableStateOf(initSelectedList(30))
+    }
     HorizontalPager(
         state,
         modifier = modifier,
-    ) { page ->
+    ) { index ->
         onPageScroll(this.currentPage)
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .graphicsLayer {
-                    val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                    val pageOffset = calculateCurrentOffsetForPage(index).absoluteValue
                     alpha = lerp(
                         start = 0f,
                         stop = 1f,
@@ -174,7 +204,12 @@ fun PagerLayout(
                 ),
                 elevation = 8.dp
             ) {
-                QuestionLayout(page,list[page])
+                if (selectedList.isNotEmpty())
+                    QuestionLayout(index, list[index], selectedList[index],showCorrectAnswer) { answerIndex, pageIndex ->
+                        val tempList = selectedList.copy()
+                        tempList[pageIndex] = answerIndex
+                        selectedList = tempList
+                    }
             }
 
         }
@@ -242,7 +277,13 @@ fun TimerLayout(timeInMils: Long = 190000, onFinish: () -> Unit) {
 
 @SuppressLint("RestrictedApi")
 @Composable
-fun QuestionLayout(index: Int, page: TestModel) {
+fun QuestionLayout(
+    index: Int,
+    page: TestModel,
+    selectedAnswer: Int,
+    showCorrectAnswer:Boolean,
+    onSelectAnswer: (index: Int, pageIndex: Int) -> Unit
+) {
     var imageList = listOf(
         R.drawable.image1,
         R.drawable.image10,
@@ -255,30 +296,36 @@ fun QuestionLayout(index: Int, page: TestModel) {
         R.drawable.image20,
         R.drawable.image22,
     )
-    var answers = listOf(page.answer1,page.answer2,page.answer3,page.answer4)
-
+    fun randomImages(): List<Int> {
+        var list = List(30){
+            imageList[Random(Calendar.getInstance().timeInMillis).nextInt(from = 0 , until = 9)]
+        }
+        return list
+    }
+    var context = LocalContext.current
+    var answers = listOf(page.answer1, page.answer2, page.answer3, page.answer4)
+    var images by remember{
+        mutableStateOf(randomImages())
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(4.dp), contentAlignment = Alignment.Center
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Image(
-                painter = painterResource(
-                    imageList[
-                            Random(Calendar.getInstance().timeInMillis).nextInt(
-                                from = 0,
-                                until = 9
-                            )
-                    ]
+            ComposeImageView(modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+                .weight(2f) , updateImage = { image->
+                page.image?.let {
+                    image.setImageBitmap(it)
+                }?:let{
+                    val drawableId = images[index]
+                    val drawable = ResourcesCompat.getDrawable(context.resources,drawableId,null)
+                    image.setImageDrawable(drawable)
+                }
 
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp)
-                    .weight(2f)
-            )
+            })
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -297,17 +344,24 @@ fun QuestionLayout(index: Int, page: TestModel) {
                         gravity = Gravity.START
                     )
                 }
-                var selectedAnswer by remember {
-                    mutableStateOf(-1)
-                }
 
-                (0..3).forEach { index ->
-                    var borderStroke = if (index == selectedAnswer) {
-                        2.dp
-                    } else 0.dp
-                    var color = if (index == selectedAnswer) {
-                        Color.DarkGray
-                    } else Color.Transparent
+                var trueAnswerColor = if(showCorrectAnswer){
+                    Color.Green
+                } else {
+                    Color.Transparent
+                }
+                (0..3).forEach { answerIndex ->
+                    var color = if (showCorrectAnswer){
+                        when {
+                            answerIndex == page.true_answer -> Color.Green
+                            selectedAnswer == answerIndex -> Color.Red
+                            else -> Color.Transparent
+                        }
+                    } else{
+                        if (answerIndex == selectedAnswer) {
+                            Color.DarkGray
+                        } else Color.Transparent
+                    }
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -315,13 +369,13 @@ fun QuestionLayout(index: Int, page: TestModel) {
                             .padding(4.dp),
                         elevation = 4.dp,
                         shape = RoundedCornerShape(16.dp),
-                        border = BorderStroke(width = borderStroke, color = color)
+                        border = BorderStroke(width = 2.dp, color = color)
                     ) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clickable {
-                                    selectedAnswer = index
+                                    onSelectAnswer(answerIndex, index)
                                 }, contentAlignment = Center
                         ) {
                             Row(
@@ -335,13 +389,13 @@ fun QuestionLayout(index: Int, page: TestModel) {
                                         .aspectRatio(0.7f)
                                 ) {
                                     AutoSizeText(
-                                        text = (index + 1).toString(),
+                                        text = (answerIndex + 1).toString(),
                                         modifier = Modifier.fillMaxSize(),
                                         color = Color.Gray
                                     )
                                 }
                                 AutoSizeText(
-                                    text = answers[index],
+                                    text = answers[answerIndex],
                                     modifier = Modifier.weight(1f),
                                     color = Color.Gray,
                                     gravity = Gravity.START
@@ -356,6 +410,19 @@ fun QuestionLayout(index: Int, page: TestModel) {
         }
     }
 }
+
+
+@Composable
+fun ComposeImageView(modifier: Modifier,updateImage:(ImageView)->Unit){
+    AndroidView(factory = {
+        ImageView(it)
+    },update = {
+        it.layoutParams = ViewGroup.LayoutParams(-1,-1)
+        updateImage(it)
+    },
+    modifier = modifier)
+}
+
 
 @Composable
 fun QuestionList(modifier: Modifier, onChoose: (index: Int) -> Unit, _choose: Int, count: Int) {

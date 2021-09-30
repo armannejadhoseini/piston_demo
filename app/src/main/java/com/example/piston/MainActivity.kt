@@ -16,6 +16,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,7 +32,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 
 class MainActivity : ComponentActivity() {
     private val viewModel: ViewModel by viewModels()
-
+    val KEY_ROUTE = "something"
     @ExperimentalFoundationApi
     @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +46,11 @@ class MainActivity : ComponentActivity() {
 
     }
 
+    @Composable
+    public fun currentRoute(navController: NavHostController): String? {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        return navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+    }
 
     @ExperimentalFoundationApi
     @ExperimentalPagerApi
