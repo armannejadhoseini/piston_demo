@@ -5,7 +5,6 @@ import android.os.CountDownTimer
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -30,12 +29,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.myapplication.domain.model.TestModel
+import com.example.piston.ui.Quize.ExamQuizPages.ElementaryResultName
+import com.example.piston.ui.Quize.QuizResult
 
 
 import com.google.accompanist.pager.*
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
@@ -43,12 +44,14 @@ import kotlin.math.absoluteValue
 import kotlin.random.Random
 
 
-
 @ExperimentalPagerApi
 @Composable
-fun ExamTestPage(navController: NavHostController, list: List<TestModel>) {
-    var state = rememberPagerState(pageCount = list.size)
-    var correctAnswer by remember{
+fun ExamTestPage(navController: NavHostController, testList: List<TestModel>) {
+    var state = rememberPagerState(pageCount = testList.size)
+    var (selectedAnswerList, selectedAnswerOnChange) = remember {
+        mutableStateOf(initSelectedList(30))
+    }
+    var correctAnswer by remember {
         mutableStateOf(false)
     }
     var choose by remember {
@@ -64,17 +67,26 @@ fun ExamTestPage(navController: NavHostController, list: List<TestModel>) {
         TopLayout(
             Modifier
                 .fillMaxWidth()
-                .weight(1.2f)
-        ) {
+                .weight(1.2f),
+            onBackPress = {
+                navController.popBackStack()
+            },
+            onFinish = {
+                val quizResult = QuizResult(selectedAnswerList,testList)
+                val quizResultJson = Gson().toJson(quizResult)
+                navController.navigate("${ElementaryResultName}/$quizResultJson")
+            }
+        )
 
-        }
         PagerLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(12f),
             state = state,
-            list,
-            correctAnswer
+            testList,
+            correctAnswer,
+            selectedAnswerList,
+            selectedAnswerOnChange,
         ) {
             choose = it
         }
@@ -83,12 +95,12 @@ fun ExamTestPage(navController: NavHostController, list: List<TestModel>) {
                 state.animateScrollToPage(it)
             }
             choose = it
-        }, choose, list.size)
+        }, choose, testList.size)
     }
 }
 
 @Composable
-fun TopLayout(modifier: Modifier, onFinish: () -> Unit) {
+fun TopLayout(modifier: Modifier, onBackPress: () -> Unit, onFinish: () -> Unit) {
     Row(
         modifier = modifier
     ) {
@@ -105,7 +117,7 @@ fun TopLayout(modifier: Modifier, onFinish: () -> Unit) {
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
-                    .clickable { }
+                    .clickable { onBackPress() }
             )
         }
         Box(
@@ -161,11 +173,11 @@ fun PagerLayout(
     state: PagerState,
     list: List<TestModel>,
     showCorrectAnswer: Boolean,
+    selectedAnswerList: ArrayList<Int>,
+    selectedAnswerOnChange: (ArrayList<Int>) -> Unit,
     onPageScroll: (Int) -> Unit
 ) {
-    var selectedList by remember {
-        mutableStateOf(initSelectedList(30))
-    }
+
     HorizontalPager(
         state,
         modifier = modifier,
@@ -204,12 +216,16 @@ fun PagerLayout(
                 ),
                 elevation = 8.dp
             ) {
-                if (selectedList.isNotEmpty())
-                    QuestionLayout(index, list[index], selectedList[index],showCorrectAnswer) { answerIndex, pageIndex ->
-                        val tempList = selectedList.copy()
-                        tempList[pageIndex] = answerIndex
-                        selectedList = tempList
-                    }
+                QuestionLayout(
+                    index,
+                    list[index],
+                    selectedAnswerList[index],
+                    showCorrectAnswer
+                ) { answerIndex, pageIndex ->
+                    val tempList = selectedAnswerList.copy()
+                    tempList[pageIndex] = answerIndex
+                    selectedAnswerOnChange(tempList)
+                }
             }
 
         }
@@ -281,7 +297,7 @@ fun QuestionLayout(
     index: Int,
     page: TestModel,
     selectedAnswer: Int,
-    showCorrectAnswer:Boolean,
+    showCorrectAnswer: Boolean,
     onSelectAnswer: (index: Int, pageIndex: Int) -> Unit
 ) {
     var imageList = listOf(
@@ -296,15 +312,17 @@ fun QuestionLayout(
         R.drawable.image20,
         R.drawable.image22,
     )
+
     fun randomImages(): List<Int> {
-        var list = List(30){
-            imageList[Random(Calendar.getInstance().timeInMillis).nextInt(from = 0 , until = 9)]
+        var list = List(30) {
+            imageList[Random(Calendar.getInstance().timeInMillis).nextInt(from = 0, until = 9)]
         }
         return list
     }
+
     var context = LocalContext.current
     var answers = listOf(page.answer1, page.answer2, page.answer3, page.answer4)
-    var images by remember{
+    var images by remember {
         mutableStateOf(randomImages())
     }
     Box(
@@ -316,12 +334,12 @@ fun QuestionLayout(
             ComposeImageView(modifier = Modifier
                 .fillMaxWidth()
                 .padding(4.dp)
-                .weight(2f) , updateImage = { image->
+                .weight(2f), updateImage = { image ->
                 page.image?.let {
                     image.setImageBitmap(it)
-                }?:let{
+                } ?: let {
                     val drawableId = images[index]
-                    val drawable = ResourcesCompat.getDrawable(context.resources,drawableId,null)
+                    val drawable = ResourcesCompat.getDrawable(context.resources, drawableId, null)
                     image.setImageDrawable(drawable)
                 }
 
@@ -345,19 +363,19 @@ fun QuestionLayout(
                     )
                 }
 
-                var trueAnswerColor = if(showCorrectAnswer){
+                var trueAnswerColor = if (showCorrectAnswer) {
                     Color.Green
                 } else {
                     Color.Transparent
                 }
                 (0..3).forEach { answerIndex ->
-                    var color = if (showCorrectAnswer){
+                    var color = if (showCorrectAnswer) {
                         when {
                             answerIndex == page.true_answer -> Color.Green
                             selectedAnswer == answerIndex -> Color.Red
                             else -> Color.Transparent
                         }
-                    } else{
+                    } else {
                         if (answerIndex == selectedAnswer) {
                             Color.DarkGray
                         } else Color.Transparent
@@ -413,14 +431,15 @@ fun QuestionLayout(
 
 
 @Composable
-fun ComposeImageView(modifier: Modifier,updateImage:(ImageView)->Unit){
+fun ComposeImageView(modifier: Modifier, updateImage: (ImageView) -> Unit) {
     AndroidView(factory = {
         ImageView(it)
-    },update = {
-        it.layoutParams = ViewGroup.LayoutParams(-1,-1)
+    }, update = {
+        it.layoutParams = ViewGroup.LayoutParams(-1, -1)
         updateImage(it)
     },
-    modifier = modifier)
+        modifier = modifier
+    )
 }
 
 

@@ -16,7 +16,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,15 +23,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.data.*
-import com.example.piston.ui.Quize.ExamQuizPageManger
-import com.example.piston.ui.Quize.FirstTestPage
+import com.example.piston.ui.Quize.QuizPageManger
 import com.example.piston.ui.theme.ReadingPage
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 
 class MainActivity : ComponentActivity() {
     private val viewModel: ViewModel by viewModels()
-    val KEY_ROUTE = "something"
 
     @ExperimentalFoundationApi
     @ExperimentalPagerApi
@@ -48,7 +45,6 @@ class MainActivity : ComponentActivity() {
     }
 
 
-
     @ExperimentalFoundationApi
     @ExperimentalPagerApi
     @Composable
@@ -62,10 +58,10 @@ class MainActivity : ComponentActivity() {
         Scaffold(
             bottomBar = {
                 if (
-                    navBackStackEntry?.destination?.route == "Home" ||
-                    navBackStackEntry?.destination?.route == "Lessons" ||
-                    navBackStackEntry?.destination?.route == "Quizes" ||
-                    navBackStackEntry?.destination?.route == "More"
+                    navBackStackEntry?.destination?.route == Screen.Home.route ||
+                    navBackStackEntry?.destination?.route == Screen.Lessons.route ||
+                    navBackStackEntry?.destination?.route == Screen.Quizes.route ||
+                    navBackStackEntry?.destination?.route == Screen.More.route
                 ) {
                     if (showBottom)
                         BottomNavigation {
@@ -172,7 +168,7 @@ class MainActivity : ComponentActivity() {
     @ExperimentalPagerApi
     @Composable
     fun ExamQuiz(showBottomBar: (Boolean) -> Unit) {
-        ExamQuizPageManger(showBottomBar)
+        QuizPageManger(showBottomBar)
     }
 
 }

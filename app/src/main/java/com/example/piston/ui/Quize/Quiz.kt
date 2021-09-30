@@ -10,9 +10,11 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -28,19 +30,21 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.domain.model.TestModel
 import com.example.myapplication.domain.model.TestPercentEntity
-import com.example.piston.AutoSizeText
-import com.example.piston.ExamTestPage
+import com.example.piston.*
 import com.example.piston.R
-import com.example.piston.ViewModel
 import com.example.piston.ui.Quize.ExamQuizPages.AdvanceTestListName
 import com.example.piston.ui.Quize.ExamQuizPages.AdvanceTestsName
+import com.example.piston.ui.Quize.ExamQuizPages.ElementaryResultName
 import com.example.piston.ui.Quize.ExamQuizPages.ElementaryTestListName
 import com.example.piston.ui.Quize.ExamQuizPages.ElementaryTestsName
 import com.example.piston.ui.Quize.ExamQuizPages.FirstTestPageName
 import com.example.piston.ui.theme.textColor
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 object ExamQuizPages {
     var FirstTestPageName = "first_test_page"
@@ -52,11 +56,12 @@ object ExamQuizPages {
     var AdvanceResultName = "advanced_result_page"
 }
 
+data class QuizResult(var answers: List<Int>, var testList: List<TestModel>)
 
 @ExperimentalPagerApi
 @ExperimentalFoundationApi
 @Composable
-fun ExamQuizPageManger(showBottom: (Boolean) -> Unit) {
+fun QuizPageManger(showBottom: (Boolean) -> Unit) {
     var navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     if (navBackStackEntry?.destination?.route != FirstTestPageName) showBottom(false)
@@ -88,6 +93,18 @@ fun ExamQuizPageManger(showBottom: (Boolean) -> Unit) {
         }
         composable(AdvanceTestsName) {
 
+        }
+        composable(
+            route = "$ElementaryResultName/{result}",
+            arguments = listOf(navArgument("result") {
+                type = NavType.StringType
+            })
+        ) {
+            var resultString = it.arguments?.getString("result", "") ?: ""
+            var gson = Gson()
+            var type = object : TypeToken<QuizResult>() {}.type
+            var quizResult = gson.fromJson<QuizResult>(resultString, type)
+            ElementaryTestResult(navController,quizResult)
         }
     }
 }
@@ -235,7 +252,6 @@ fun AdvancedTestBanner(onPageChange: () -> Unit) {
     }
 }
 
-
 @ExperimentalFoundationApi
 @Composable
 fun TestListLayout(list: ArrayList<TestPercentEntity>, onPageChange: (Int) -> Unit) {
@@ -292,6 +308,13 @@ fun TestListLayout(list: ArrayList<TestPercentEntity>, onPageChange: (Int) -> Un
                         ) {
                             it.setLines(1)
                         }
+                        LinearProgressIndicator(
+                            progress = item.percent.toFloat(), modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(0.4f), color = colorResource(
+                                id = R.color.courcesBlue
+                            )
+                        )
                     }
                 }
             }
@@ -308,7 +331,7 @@ fun AdvancedTestList(onPageChange: (Int) -> Unit) {
     var viewModel = viewModel(ViewModel::class.java)
     LaunchedEffect(key1 = "start") {
         launch(Dispatchers.IO) {
-            list = viewModel.getQuizPercentListFromDb() as ArrayList<TestPercentEntity>
+            list = viewModel.getExamPercentListFromDb() as ArrayList<TestPercentEntity>
         }
     }
     TestListLayout(list, onPageChange)
@@ -350,7 +373,20 @@ fun AdvancedTestsPage() {
 }
 
 @Composable
-fun ElementaryTestResult() {
+fun ElementaryTestResult(navController: NavHostController,quizResult: QuizResult) {
+    var correctAnswerCount = 0
+    var answers = quizResult.answers
+    var testList = quizResult.testList
+    answers.forEachIndexed { index, item ->
+        if (testList[index].true_answer == item) {
+            correctAnswerCount++
+        }
+    }
+    var percent = correctAnswerCount / answers.size.toFloat()
+    percent *= 100
+    Box(modifier = Modifier.fillMaxSize()) {
+        ExamResultPage(navController = navController)
+    }
 }
 
 @Composable
