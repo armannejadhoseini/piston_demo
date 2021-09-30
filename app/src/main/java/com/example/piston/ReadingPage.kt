@@ -1,14 +1,15 @@
-package com.example.piston.ui.theme
+package com.example.piston
 
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.data.Constants
 import com.example.myapplication.domain.LectureList
-import com.example.piston.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -39,7 +39,7 @@ fun ReadingPage(navController: NavController, index: Int, list: List<LectureList
     HorizontalPager(state = rememberPagerState(pageCount = 8)) {
         val page = this.currentPage
         Log.d("TAG", "ReadingPage: $page")
-        Column() {
+        Column {
             PageHeader(navController, page)
             if (page == 3) {
                 QuestionTab(
@@ -132,7 +132,8 @@ fun PageHeader(navController: NavController, page: Int) {
                             .width(15.dp)
                             .height(15.dp),
                         text = "$index",
-                        color = colorResource(id = R.color.white)
+                        fontSize = 1.sp,
+                        color = colorResource(id = R.color.trikyRed)
                     )
                 }
             }
@@ -265,7 +266,6 @@ fun QuestionTab(
     answer4: String,
     true_answer: Int
 ) {
-
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.End) {
         GlideImage(
             modifier = Modifier
@@ -281,17 +281,33 @@ fun QuestionTab(
                 .padding(horizontal = 20.dp, vertical = 30.dp),
             text = title,
             color = colorResource(id = R.color.textColors),
-            fontSize = 15.sp
+            fontSize = 15.sp,
+            textAlign = TextAlign.End
         )
 
-        listOf(1, 2, 3, 4).forEach { item ->
+        var selectable by remember {
+            mutableStateOf(true)
+        }
+        var trueColor by remember {
+            mutableStateOf(R.color.white)
+        }
+        listOf(1, 2, 3, 4).forEachIndexed { index, item ->
             var color by remember {
                 mutableStateOf(R.color.white)
+            }
+            var selected by remember {
+                mutableStateOf(false)
             }
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 20.dp, top = 4.dp, end = 20.dp, bottom = 4.dp),
+                    .padding(start = 20.dp, top = 4.dp, end = 20.dp, bottom = 4.dp)
+                    .border(
+                        4.dp, when (item - 1) {
+                            true_answer -> colorResource(id = trueColor)
+                            else -> colorResource(id = color)
+                        }, shape = RoundedCornerShape(10.dp)
+                    ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = 4.dp
             ) {
@@ -321,18 +337,33 @@ fun QuestionTab(
                         modifier = Modifier
                             .padding(end = 4.dp)
                             .layoutId(item - 1),
-                        selected = false,
-                        colors = RadioButtonDefaults.colors(colorResource(id = R.color.gray)),
+                        selected = selected,
                         onClick = {
+                            if (index == true_answer) {
+                                selected = true
+                                color = R.color.isDoneGreen
+                                selectable = false
+                                trueColor = R.color.isDoneGreen
+                            } else {
+                                selected = true
+                                color = R.color.trikyRed
+                                selectable = false
+                                trueColor = R.color.isDoneGreen
 
-                        })
+                            }
+                        },
+                        enabled = selectable
+                    )
 
                 }
             }
         }
     }
-
 }
+
+
+
+
 
 
 
