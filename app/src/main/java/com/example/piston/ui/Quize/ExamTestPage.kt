@@ -30,7 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavHostController
-import com.example.myapplication.domain.model.TestModel
+import com.example.myapplication.domain.model.QuizModel
 import com.example.piston.ui.Quize.ExamQuizPages.ElementaryResultName
 import com.example.piston.ui.Quize.QuizResult
 
@@ -46,8 +46,8 @@ import kotlin.random.Random
 
 @ExperimentalPagerApi
 @Composable
-fun ExamTestPage(navController: NavHostController, testList: List<TestModel>) {
-    var state = rememberPagerState(pageCount = testList.size)
+fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
+    var state = rememberPagerState(pageCount = quizList.size)
     var (selectedAnswerList, selectedAnswerOnChange) = remember {
         mutableStateOf(initSelectedList(30))
     }
@@ -58,6 +58,10 @@ fun ExamTestPage(navController: NavHostController, testList: List<TestModel>) {
         mutableStateOf(0)
     }
     var scope = rememberCoroutineScope()
+    var countDownTimer by remember{
+        mutableStateOf<CountDownTimer?>(null)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -70,11 +74,15 @@ fun ExamTestPage(navController: NavHostController, testList: List<TestModel>) {
                 .weight(1.2f),
             onBackPress = {
                 navController.popBackStack()
+                countDownTimer?.cancel()
             },
             onFinish = {
-                val quizResult = QuizResult(selectedAnswerList,testList)
+                val quizResult = QuizResult(selectedAnswerList, quizList)
                 val quizResultJson = Gson().toJson(quizResult)
                 navController.navigate("${ElementaryResultName}/$quizResultJson")
+            },
+            onCancel = {
+                countDownTimer = it
             }
         )
 
@@ -83,7 +91,7 @@ fun ExamTestPage(navController: NavHostController, testList: List<TestModel>) {
                 .fillMaxWidth()
                 .weight(12f),
             state = state,
-            testList,
+            quizList,
             correctAnswer,
             selectedAnswerList,
             selectedAnswerOnChange,
@@ -95,12 +103,12 @@ fun ExamTestPage(navController: NavHostController, testList: List<TestModel>) {
                 state.animateScrollToPage(it)
             }
             choose = it
-        }, choose, testList.size)
+        }, choose, quizList.size)
     }
 }
 
 @Composable
-fun TopLayout(modifier: Modifier, onBackPress: () -> Unit, onFinish: () -> Unit) {
+fun TopLayout(modifier: Modifier, onBackPress: () -> Unit, onFinish: () -> Unit,onCancel: (CountDownTimer) -> Unit) {
     Row(
         modifier = modifier
     ) {
@@ -125,9 +133,10 @@ fun TopLayout(modifier: Modifier, onBackPress: () -> Unit, onFinish: () -> Unit)
                 .fillMaxHeight()
                 .weight(4f), contentAlignment = Center
         ) {
-            TimerLayout(20 * 60 * 1000) {
-                onFinish()
-            }
+            TimerLayout(20 * 60 * 1000,
+                onCancel = onCancel,
+                onFinish = onFinish
+            )
         }
         Card(
             modifier = Modifier
@@ -171,7 +180,7 @@ fun initSelectedList(size: Int): ArrayList<Int> {
 fun PagerLayout(
     modifier: Modifier,
     state: PagerState,
-    list: List<TestModel>,
+    list: List<QuizModel>,
     showCorrectAnswer: Boolean,
     selectedAnswerList: ArrayList<Int>,
     selectedAnswerOnChange: (ArrayList<Int>) -> Unit,
@@ -233,30 +242,35 @@ fun PagerLayout(
 }
 
 @Composable
-fun TimerLayout(timeInMils: Long = 190000, onFinish: () -> Unit) {
+fun TimerLayout(
+    timeInMils: Long = 190000,
+    onFinish: () -> Unit,
+    onCancel: (CountDownTimer) -> Unit
+) {
+
     var minute by remember {
         mutableStateOf(0)
     }
     var second by remember {
         mutableStateOf(0)
     }
+    var timer = object : CountDownTimer(timeInMils, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            var seconds = millisUntilFinished / 1000
+            minute = (seconds / 60).toInt()
+            second = (seconds % 60).toInt()
+        }
+
+        override fun onFinish() {
+            onFinish()
+        }
+    }
     var coroutineScope = rememberCoroutineScope()
     LaunchedEffect(key1 = "one") {
         coroutineScope.launch {
-            var x = object : CountDownTimer(timeInMils, 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    var seconds = millisUntilFinished / 1000
-                    minute = (seconds / 60).toInt()
-                    second = (seconds % 60).toInt()
-                }
-
-                override fun onFinish() {
-                    onFinish()
-                }
-            }
-            x.start()
+            timer.start()
+            onCancel(timer)
         }
-
     }
 
     Card(
@@ -295,7 +309,7 @@ fun TimerLayout(timeInMils: Long = 190000, onFinish: () -> Unit) {
 @Composable
 fun QuestionLayout(
     index: Int,
-    page: TestModel,
+    page: QuizModel,
     selectedAnswer: Int,
     showCorrectAnswer: Boolean,
     onSelectAnswer: (index: Int, pageIndex: Int) -> Unit

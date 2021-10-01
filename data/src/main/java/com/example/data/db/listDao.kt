@@ -8,7 +8,6 @@ import com.example.data.entities.ExamPercentEntity
 import com.example.data.entities.QuizEntity
 import com.example.data.entities.QuizPercentEntity
 import com.example.myapplication.domain.model.CourseListModel
-import com.example.myapplication.domain.model.TestModel
 import com.example.myapplication.domain.model.TheoryList
 
 @Dao

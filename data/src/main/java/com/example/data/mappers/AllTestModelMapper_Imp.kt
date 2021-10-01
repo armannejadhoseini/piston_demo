@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.example.myapplication.domain.mapper.AllTestMapper
 import com.example.myapplication.domain.model.AllTestModel
-import com.example.myapplication.domain.model.TestModel
+import com.example.myapplication.domain.model.QuizModel
 
 
 fun convertByteArrayToBitmap(byteArray: ByteArray?): Bitmap? {
@@ -14,11 +14,11 @@ fun convertByteArrayToBitmap(byteArray: ByteArray?): Bitmap? {
     return null
 }
 class AllTestModelMapper_Imp: AllTestMapper {
-    override fun AllTestEntityToTestModel(tempList: List<AllTestModel>): List<TestModel> {
-        val list = mutableListOf<TestModel>()
+    override fun AllTestEntityToTestModel(tempList: List<AllTestModel>): List<QuizModel> {
+        val list = mutableListOf<QuizModel>()
         tempList.forEach { item ->
             list.add(
-                TestModel(
+                QuizModel(
                     item.id.toInt(),
                     item.quiz_number.toInt(),
                     item.title,

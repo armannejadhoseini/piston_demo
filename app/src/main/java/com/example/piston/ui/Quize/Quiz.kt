@@ -14,6 +14,7 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -27,7 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.myapplication.domain.model.TestModel
+import com.example.myapplication.domain.model.QuizModel
 import com.example.myapplication.domain.model.TestPercentEntity
 import com.example.piston.*
 import com.example.piston.R
@@ -54,7 +55,7 @@ object ExamQuizPages {
     var AdvanceResultName = "advanced_result_page"
 }
 
-data class QuizResult(var answers: List<Int>, var testList: List<TestModel>)
+data class QuizResult(var answers: List<Int>, var quizList: List<QuizModel>)
 
 @ExperimentalPagerApi
 @ExperimentalFoundationApi
@@ -72,12 +73,12 @@ fun QuizPageManger(showBottom: (Boolean) -> Unit) {
             FirstTestPage(navController)
         }
         composable(route = ElementaryTestListName) {
-            ElementaryTestList {
+            ElementaryTestList(navController) {
                 navController.navigate("$ElementaryTestsName/$it")
             }
         }
         composable(route = AdvanceTestListName) {
-            AdvancedTestList {
+            AdvancedTestList(navController) {
                 navController.navigate("$AdvanceTestsName/$it")
             }
         }
@@ -102,7 +103,7 @@ fun QuizPageManger(showBottom: (Boolean) -> Unit) {
             var gson = Gson()
             var type = object : TypeToken<QuizResult>() {}.type
             var quizResult = gson.fromJson<QuizResult>(resultString, type)
-            ElementaryTestResult(navController,quizResult)
+            ElementaryTestResult(navController, quizResult)
         }
     }
 }
@@ -250,119 +251,168 @@ fun AdvancedTestBanner(onPageChange: () -> Unit) {
     }
 }
 
+@Composable
+fun TopBar(modifier: Modifier, text: String, onBackPress: () -> Unit) {
+    Row(modifier = modifier.fillMaxWidth()) {
+        ImageIcon(
+            modifier = Modifier
+                .size(40.dp)
+                .align(Alignment.CenterVertically),
+            backColor = Color.Blue,
+            image = R.drawable.ic_back,
+            clickable = {
+                onBackPress()
+            }
+        )
+        Spacer(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1f)
+        )
+        AutoSizeText(
+            text = text,
+            modifier = Modifier
+                .fillMaxHeight(0.8f)
+                .weight(2f),
+            color = textColor
+        )
+
+    }
+}
+
 @ExperimentalFoundationApi
 @Composable
-fun TestListLayout(list: ArrayList<TestPercentEntity>, onPageChange: (Int) -> Unit) {
-    LazyVerticalGrid(
-        cells = GridCells.Fixed(2), contentPadding = PaddingValues(8.dp), modifier = Modifier
+fun TestListLayout(
+    list: List<TestPercentEntity>,
+    onPageChange: (Int) -> Unit,
+    onBackPress: () -> Unit
+) {
+    Column(
+        modifier = Modifier
             .fillMaxSize()
-            .background(
-                color = colorResource(
-                    id = R.color.layout_background
-                )
-            )
     ) {
-        list.forEachIndexed { index, item ->
-            item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .padding(4.dp),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Column(modifier = Modifier
-                        .fillMaxSize()
-                        .clickable {
-                            onPageChange(item.id)
-                        }) {
-                        AutoSizeText(
-                            text = "آزمون مقدماتی :" + (index + 1).toString(),
-                            modifier = Modifier
-                                .fillMaxWidth(0.7f)
-                                .weight(2f)
-                                .align(Alignment.CenterHorizontally),
-                            color = textColor
-                        ) {
-                            it.setLines(1)
-                        }
-                        AutoSizeText(
-                            text = "آخرین تلاش شما",
-                            modifier = Modifier
-                                .fillMaxWidth(0.7f)
-                                .weight(1f)
-                                .align(Alignment.CenterHorizontally),
-                            color = textColor
-                        ) {
-                            it.setLines(1)
-                        }
-                        AutoSizeText(
-                            text = "${item.percent}%",
-                            modifier = Modifier
-                                .fillMaxWidth(0.2f)
-                                .weight(1f)
-                                .align(Alignment.CenterHorizontally),
-                            color = textColor
-                        ) {
-                            it.setLines(1)
-                        }
-                        LinearProgressIndicator(
-                            progress = item.percent.toFloat(), modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(0.4f), color = colorResource(
-                                id = R.color.courcesBlue
+        TopBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .padding(4.dp), text = stringResource(id = R.string.ExamListTitle_txt)
+        ) {
+            onBackPress()
+        }
+        LazyVerticalGrid(
+            cells = GridCells.Fixed(2), contentPadding = PaddingValues(8.dp), modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .background(
+                    color = colorResource(
+                        id = R.color.layout_background
+                    )
+                )
+        ) {
+            list.forEachIndexed { index, item ->
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .padding(4.dp),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Column(modifier = Modifier
+                            .fillMaxSize()
+                            .clickable {
+                                onPageChange(item.id)
+                            }) {
+                            AutoSizeText(
+                                text = "آزمون مقدماتی :" + (index + 1).toString(),
+                                modifier = Modifier
+                                    .fillMaxWidth(0.7f)
+                                    .weight(2f)
+                                    .align(Alignment.CenterHorizontally),
+                                color = textColor
+                            ) {
+                                it.setLines(1)
+                            }
+                            AutoSizeText(
+                                text = "آخرین تلاش شما",
+                                modifier = Modifier
+                                    .fillMaxWidth(0.7f)
+                                    .weight(1f)
+                                    .align(Alignment.CenterHorizontally),
+                                color = textColor
+                            ) {
+                                it.setLines(1)
+                            }
+                            AutoSizeText(
+                                text = "${item.percent}%",
+                                modifier = Modifier
+                                    .fillMaxWidth(0.2f)
+                                    .weight(1f)
+                                    .align(Alignment.CenterHorizontally),
+                                color = textColor
+                            ) {
+                                it.setLines(1)
+                            }
+                            LinearProgressIndicator(
+                                progress = (item.percent.toFloat() / 100f).coerceIn(0f, 1f),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(0.4f),
+                                color = colorResource(
+                                    id = R.color.courcesBlue
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
         }
     }
+
 }
 
 @ExperimentalFoundationApi
 @Composable
-fun AdvancedTestList(onPageChange: (Int) -> Unit) {
-    var list by remember {
-        mutableStateOf(ArrayList<TestPercentEntity>())
+fun AdvancedTestList(
+    navController: NavHostController,
+    viewModel: ViewModel = viewModel(),
+    onPageChange: (Int) -> Unit
+) {
+    val list by viewModel.examPercentList.collectAsState(initial = null, Dispatchers.IO)
+    list?.let {
+        TestListLayout(it, onPageChange, onBackPress = {
+
+        })
     }
-    var viewModel = viewModel(ViewModel::class.java)
-    LaunchedEffect(key1 = "start") {
-        launch(Dispatchers.IO) {
-            list = viewModel.getExamPercentListFromDb() as ArrayList<TestPercentEntity>
-        }
-    }
-    TestListLayout(list, onPageChange)
 }
 
 @ExperimentalFoundationApi
 @Composable
-fun ElementaryTestList(onPageChange: (Int) -> Unit) {
-    var list by remember {
-        mutableStateOf(ArrayList<TestPercentEntity>())
+fun ElementaryTestList(
+    navController: NavHostController,
+    viewModel: ViewModel = viewModel(),
+    onPageChange: (Int) -> Unit
+) {
+    val list by viewModel.examPercentList.collectAsState(initial = null, Dispatchers.IO)
+    list?.let {
+        TestListLayout(it, onPageChange, onBackPress = {
+            navController.popBackStack()
+        })
     }
-    var viewModel = viewModel(ViewModel::class.java)
-    LaunchedEffect(key1 = "start") {
-        this.launch(Dispatchers.IO) {
-            list = viewModel.getExamPercentListFromDb() as ArrayList<TestPercentEntity>
-        }
-    }
-    TestListLayout(list, onPageChange)
 }
 
 @ExperimentalPagerApi
 @Composable
-fun ElementaryTestsPage(navController: NavHostController, number: Int) {
-    var list by remember {
-        mutableStateOf(ArrayList<TestModel>())
+fun ElementaryTestsPage(
+    navController: NavHostController,
+    number: Int,
+    viewModel: ViewModel = viewModel()
+) {
+    var list = viewModel.examList(number)
+        .collectAsState(initial = null, context = Dispatchers.IO)
+    list.value?.let {
+        ExamTestPage(navController, it)
     }
-    var viewModel = viewModel(ViewModel::class.java)
-    LaunchedEffect(key1 = "start") {
-        this.launch(Dispatchers.IO) {
-            list = viewModel.getExamListFromDb(number) as ArrayList<TestModel>
-        }
-    }
-    ExamTestPage(navController, list)
 }
 
 @Composable
@@ -371,10 +421,10 @@ fun AdvancedTestsPage() {
 }
 
 @Composable
-fun ElementaryTestResult(navController: NavHostController,quizResult: QuizResult) {
+fun ElementaryTestResult(navController: NavHostController, quizResult: QuizResult) {
     var correctAnswerCount = 0
     var answers = quizResult.answers
-    var testList = quizResult.testList
+    var testList = quizResult.quizList
     answers.forEachIndexed { index, item ->
         if (testList[index].true_answer == item) {
             correctAnswerCount++
@@ -382,8 +432,17 @@ fun ElementaryTestResult(navController: NavHostController,quizResult: QuizResult
     }
     var percent = correctAnswerCount / answers.size.toFloat()
     percent *= 100
+    var viewModel = viewModel(ViewModel::class.java)
+
+    LaunchedEffect(key1 = "start") {
+        launch(Dispatchers.IO) {
+            viewModel.setExamPercentOnDb(quizResult.quizList[0].test_number, percent.toInt())
+        }
+    }
+
+
     Box(modifier = Modifier.fillMaxSize()) {
-        ExamResultPage(navController = navController,correctAnswerCount,percent)
+        ExamResultPage(navController = navController, correctAnswerCount, percent)
     }
 }
 

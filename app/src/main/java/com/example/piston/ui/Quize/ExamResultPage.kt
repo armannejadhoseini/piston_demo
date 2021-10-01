@@ -40,7 +40,7 @@ fun ExamResultPage(navController: NavHostController, correctAnswerCount: Int, pe
                 Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                6, 20f
+                correctAnswerCount, percent
             )
         }
     }
@@ -52,7 +52,7 @@ fun ShowPercent(percent: Float, title: String, modifier: Modifier, color: Int) {
         CircularProgressIndicator(
             progress = 1f,
             modifier = Modifier.fillMaxSize(1f),
-            color = Color(240,240,255),
+            color = Color(240, 240, 255),
             strokeWidth = 8.dp
         )
         CircularProgressIndicator(
@@ -69,7 +69,7 @@ fun ShowPercent(percent: Float, title: String, modifier: Modifier, color: Int) {
             AutoSizeText(
                 text = "${(percent.coerceIn(0f, 100f)).roundToInt()}%", modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f), color = colorResource(
+                    .weight(2f), color = colorResource(
                     id = color
                 )
             ) {
@@ -78,7 +78,7 @@ fun ShowPercent(percent: Float, title: String, modifier: Modifier, color: Int) {
             AutoSizeText(
                 text = title, modifier = Modifier
                     .fillMaxWidth()
-                    .weight(2f), color = colorResource(
+                    .weight(1f), color = colorResource(
                     id = color
                 )
             ) {
@@ -206,9 +206,47 @@ fun Body(modifier: Modifier, correctAnswerCount: Int, percent: Float) {
         ShowResultText(
             Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .weight(3f)
                 .padding(start = 16.dp, end = 16.dp),
             result
+        )
+        CustomButton(
+            title = stringResource(id = R.string.TryAgainTest_btn), modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f).padding(start = 32.dp,end = 32.dp,top = 16.dp,bottom = 4.dp), shape = RoundedCornerShape(8.dp), backColor = colorResource(
+                id = R.color.textColors
+            ), textColor = Color.White
+        )
+        CustomButton(
+            title =stringResource(id = R.string.ShowTrueAnswer_txt), modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 32.dp,end = 32.dp,top = 4.dp,bottom = 16.dp)
+                .weight(1f), shape = RoundedCornerShape(8.dp), backColor = colorResource(
+                id = R.color.textColor_deep_blue
+            ), textColor = Color.White
+        )
+    }
+}
+
+@Composable
+fun CustomButton(
+    title: String,
+    modifier: Modifier,
+    shape: Shape,
+    backColor: Color,
+    textColor: Color
+) {
+    Card(
+        modifier = modifier,
+        shape = shape,
+        backgroundColor = backColor
+    ) {
+        AutoSizeText(
+            text = title,
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .fillMaxHeight(),
+            color = textColor
         )
     }
 }

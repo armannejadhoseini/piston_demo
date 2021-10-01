@@ -2,7 +2,7 @@ package com.example.myapplication.domain.model
 
 import android.graphics.Bitmap
 
-data class TestModel(
+data class QuizModel(
     val id: Int,
     val test_number: Int,
     val title: String,

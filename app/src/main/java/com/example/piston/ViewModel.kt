@@ -9,17 +9,19 @@ import com.example.data.db.RoomDatabase
 import com.example.data.entities.*
 import com.example.data.mappers.AllTestModelMapper_Imp
 import com.example.myapplication.domain.model.LectureList
-import com.example.myapplication.domain.model.TestModel
+import com.example.myapplication.domain.model.QuizModel
 import com.example.myapplication.domain.model.TestPercentEntity
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.flow
 
 class ViewModel(application: Application) : AndroidViewModel(application) {
     val db = Room.databaseBuilder(
         application.applicationContext,
         RoomDatabase::class.java,
         "lecture_content"
-    ).createFromAsset("database/database.db")
-        .fallbackToDestructiveMigration()
+    )
+        .createFromAsset("database/database.db")
+        .fallbackToDestructiveMigrationOnDowngrade()
         .build()
 
 
@@ -27,7 +29,6 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
     private val allTestModelMapper_Imp = AllTestModelMapper_Imp()
     var practical_list = listOf<LectureList>()
     var theory_list = listOf<LectureList>()
-    var examPercentList = listOf<ExamPercentEntity>()
 
 
     fun initDb() {
@@ -35,22 +36,34 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
         getPracticalListFromDb()
     }
 
-    suspend fun getExamListFromDb(number: Int): List<TestModel> {
+
+    fun examList(number: Int) = flow<List<QuizModel>?> {
         var examList = db.listDao().getExamList(number.toLong())
-        return allTestModelMapper_Imp.AllTestEntityToTestModel(examList.toAllTestList())
+        emit(allTestModelMapper_Imp.AllTestEntityToTestModel(examList.toAllTestList()))
     }
 
-    suspend fun getQuizListFromDb(number: Int): List<TestModel> {
+    fun quizList(number: Int) = flow<List<QuizModel>?> {
         var quizList = db.listDao().getQuizList(number.toLong())
-        return allTestModelMapper_Imp.AllTestEntityToTestModel(quizList.toAllTestList())
+        emit(allTestModelMapper_Imp.AllTestEntityToTestModel(quizList.toAllTestList()))
     }
 
-    suspend fun getExamPercentListFromDb(): List<TestPercentEntity> {
-        return db.listDao().getExamPercentList().toTestPercent()
+
+    val examPercentList = flow<List<TestPercentEntity>?> {
+        val list = db.listDao().getExamPercentList().toTestPercent()
+        emit(list)
     }
 
-    suspend fun getQuizPercentListFromDb(): List<TestPercentEntity> {
-        return db.listDao().getQuizPercentList().toTestPercent()
+    val quizPercentList = flow<List<TestPercentEntity>?> {
+        val list = db.listDao().getQuizPercentList().toTestPercent()
+        emit(list)
+    }
+
+    suspend fun setExamPercentOnDb(id: Int, percent: Int) {
+        db.listDao().setExamPercent(id.toLong(), percent.toLong())
+    }
+
+    suspend fun setQuizPercentOnDb(id: Int, percent: Int) {
+        db.listDao().setQuizPercent(id.toLong(), percent.toLong())
     }
 
     fun getPracticalListFromDb() {
