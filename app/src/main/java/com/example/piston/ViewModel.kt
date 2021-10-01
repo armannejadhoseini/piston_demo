@@ -58,12 +58,11 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
         emit(list)
     }
 
-    suspend fun setExamPercentOnDb(id: Int, percent: Int) {
-        db.listDao().setExamPercent(id.toLong(), percent.toLong())
-    }
-
-    suspend fun setQuizPercentOnDb(id: Int, percent: Int) {
+    fun setQuizPercent(id: Int,percent: Int) = viewModelScope.launch(Dispatchers.IO){
         db.listDao().setQuizPercent(id.toLong(), percent.toLong())
+    }
+    fun setExamPercent(id: Int,percent: Int) = viewModelScope.launch(Dispatchers.IO) {
+        db.listDao().setExamPercent(id.toLong(), percent.toLong())
     }
 
     fun getPracticalListFromDb() {

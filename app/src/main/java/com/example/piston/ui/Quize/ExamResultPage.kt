@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.piston.ui.Quize.ExamQuizPages
 import com.example.piston.ui.theme.textColor
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -35,7 +36,13 @@ fun ExamResultPage(navController: NavHostController, correctAnswerCount: Int, pe
                         bottom = 4.dp
                     ),
                 stringResource(id = R.string.TestResulteTitle)
-            )
+            ) {
+                navController.popBackStack(
+                    route = ExamQuizPages.FirstTestPageName,
+                    inclusive = false,
+                    saveState = false
+                )
+            }
             Body(
                 Modifier
                     .fillMaxWidth()
@@ -138,7 +145,7 @@ fun ImageIcon(
 
 
 @Composable
-fun TopBar(modifier: Modifier, text: String) {
+fun TopBar(modifier: Modifier, text: String, onBackPress: () -> Unit) {
     Row(modifier = modifier.fillMaxWidth()) {
         ImageIcon(
             modifier = Modifier
@@ -146,7 +153,7 @@ fun TopBar(modifier: Modifier, text: String) {
                 .align(Alignment.CenterVertically),
             backColor = Color.Blue,
             image = R.drawable.ic_back,
-            clickable = {}
+            clickable = onBackPress
         )
         Spacer(
             modifier = Modifier
@@ -211,16 +218,21 @@ fun Body(modifier: Modifier, correctAnswerCount: Int, percent: Float) {
             result
         )
         CustomButton(
-            title = stringResource(id = R.string.TryAgainTest_btn), modifier = Modifier
+            title = stringResource(id = R.string.TryAgainTest_btn),
+            modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f).padding(start = 32.dp,end = 32.dp,top = 16.dp,bottom = 4.dp), shape = RoundedCornerShape(8.dp), backColor = colorResource(
+                .weight(1f)
+                .padding(start = 32.dp, end = 32.dp, top = 16.dp, bottom = 4.dp),
+            shape = RoundedCornerShape(8.dp),
+            backColor = colorResource(
                 id = R.color.textColors
-            ), textColor = Color.White
+            ),
+            textColor = Color.White
         )
         CustomButton(
-            title =stringResource(id = R.string.ShowTrueAnswer_txt), modifier = Modifier
+            title = stringResource(id = R.string.ShowTrueAnswer_txt), modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 32.dp,end = 32.dp,top = 4.dp,bottom = 16.dp)
+                .padding(start = 32.dp, end = 32.dp, top = 4.dp, bottom = 16.dp)
                 .weight(1f), shape = RoundedCornerShape(8.dp), backColor = colorResource(
                 id = R.color.textColor_deep_blue
             ), textColor = Color.White

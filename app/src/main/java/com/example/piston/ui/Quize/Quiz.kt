@@ -122,7 +122,7 @@ fun FirstTestPage(navController: NavHostController) {
                 .aspectRatio(4f)
         ) {
             AutoSizeText(
-                text = stringResource(id = R.string.BaseTestTitle),
+                text = stringResource(id = R.string.TestCategoryTitle_txt),
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(0.5f)
@@ -393,7 +393,7 @@ fun ElementaryTestList(
     viewModel: ViewModel = viewModel(),
     onPageChange: (Int) -> Unit
 ) {
-    val list by viewModel.examPercentList.collectAsState(initial = null, Dispatchers.IO)
+    val list by viewModel.quizPercentList.collectAsState(initial = null, Dispatchers.IO)
     list?.let {
         TestListLayout(it, onPageChange, onBackPress = {
             navController.popBackStack()
@@ -408,7 +408,7 @@ fun ElementaryTestsPage(
     number: Int,
     viewModel: ViewModel = viewModel()
 ) {
-    var list = viewModel.examList(number)
+    var list = viewModel.quizList(number)
         .collectAsState(initial = null, context = Dispatchers.IO)
     list.value?.let {
         ExamTestPage(navController, it)
@@ -421,7 +421,7 @@ fun AdvancedTestsPage() {
 }
 
 @Composable
-fun ElementaryTestResult(navController: NavHostController, quizResult: QuizResult) {
+fun ElementaryTestResult(navController: NavHostController, quizResult: QuizResult,viewModel: ViewModel = viewModel()) {
     var correctAnswerCount = 0
     var answers = quizResult.answers
     var testList = quizResult.quizList
@@ -432,15 +432,7 @@ fun ElementaryTestResult(navController: NavHostController, quizResult: QuizResul
     }
     var percent = correctAnswerCount / answers.size.toFloat()
     percent *= 100
-    var viewModel = viewModel(ViewModel::class.java)
-
-    LaunchedEffect(key1 = "start") {
-        launch(Dispatchers.IO) {
-            viewModel.setExamPercentOnDb(quizResult.quizList[0].test_number, percent.toInt())
-        }
-    }
-
-
+    viewModel.setQuizPercent(quizResult.quizList[0].test_number,percent.toInt())
     Box(modifier = Modifier.fillMaxSize()) {
         ExamResultPage(navController = navController, correctAnswerCount, percent)
     }
