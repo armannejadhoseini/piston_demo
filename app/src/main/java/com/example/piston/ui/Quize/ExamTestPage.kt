@@ -20,14 +20,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.fontResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavHostController
@@ -80,8 +82,8 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
             },
             onFinish = {
                 countDownTimer?.cancel()
-                val quizResult = QuizResult(selectedAnswerList, quizList)
-                val quizResultJson = Gson().toJson(quizResult)
+                val quizResult = QuizResult(selectedAnswerList.toList(), quizList.toList())
+                val quizResultJson = Gson().toJson(quizResult,QuizResult::class.java)
                 navController.navigate("${ElementaryResultName}/$quizResultJson")
             },
             onCancel = {
@@ -517,7 +519,7 @@ fun AutoSizeText(
         it.layoutParams = ViewGroup.LayoutParams(-1, -1)
         it.gravity = gravity
         it.setTextColor(color.toArgb())
-        it.setTypeface(ResourcesCompat.getFont(it.context, font))
+        it.typeface = ResourcesCompat.getFont(it.context, font)
         androidText?.let { andriodText ->
             androidText(it)
         }

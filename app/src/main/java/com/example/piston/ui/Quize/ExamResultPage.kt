@@ -1,11 +1,14 @@
 package com.example.piston
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -16,6 +19,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.navigation.NavHostController
 import com.example.piston.ui.Quize.ExamQuizPages
 import com.example.piston.ui.Quize.QuizResult
@@ -24,6 +30,24 @@ import com.google.gson.Gson
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
+
+open class A(var name: String) {
+    operator fun plus(b: A): A {
+        val name = this.name + b.name
+        return A(name)
+    }
+    fun <T : A> print(context: Context, value: T) {
+        Toast.makeText(context, value.name, Toast.LENGTH_SHORT).show()
+    }
+}
+
+
+fun test() {
+    var a = A("ali")
+    var b = A("nima")
+    var c = a + b
+}
+
 @Composable
 fun ExamResultPage(
     navController: NavHostController,
@@ -31,6 +55,7 @@ fun ExamResultPage(
     percent: Float,
     quizResult: QuizResult
 ) {
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar(
@@ -54,7 +79,7 @@ fun ExamResultPage(
                 Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                correctAnswerCount, percent , navController , quizResult
+                correctAnswerCount, percent, navController, quizResult
             )
         }
     }
@@ -240,7 +265,7 @@ fun Body(
             backColor = colorResource(
                 id = R.color.textColors
             ),
-            textColor = Color.White ,
+            textColor = Color.White,
             onClick = {
                 navController.popBackStack()
             }
@@ -252,7 +277,7 @@ fun Body(
                 .weight(1f), shape = RoundedCornerShape(8.dp), backColor = colorResource(
                 id = R.color.textColor_deep_blue
             ), textColor = Color.White
-        ){
+        ) {
             var quizResultJson = Gson().toJson(quizResult)
             navController.navigate(route = "${ExamQuizPages.ShowTrueAnswersName}/$quizResultJson")
         }
@@ -266,7 +291,7 @@ fun CustomButton(
     shape: Shape,
     backColor: Color,
     textColor: Color,
-    onClick:()->Unit
+    onClick: () -> Unit
 ) {
     Card(
         modifier = modifier,

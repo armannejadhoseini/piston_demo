@@ -173,7 +173,7 @@ fun QuestionLayout(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clickable {
-                                    onSelectAnswer(answerIndex, index)
+//                                    onSelectAnswer(answerIndex, index)
                                 }, contentAlignment = Alignment.Center
                         ) {
                             Row(
@@ -259,7 +259,7 @@ fun PagerLayout(
                 ),
                 elevation = 8.dp
             ) {
-                com.example.piston.QuestionLayout(
+                QuestionLayout(
                     index,
                     list[index],
                     selectedAnswerList[index],
