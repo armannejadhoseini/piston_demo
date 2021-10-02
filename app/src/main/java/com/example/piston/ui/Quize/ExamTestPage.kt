@@ -379,12 +379,6 @@ fun QuestionLayout(
                         gravity = Gravity.START
                     )
                 }
-
-                var trueAnswerColor = if (showCorrectAnswer) {
-                    Color.Green
-                } else {
-                    Color.Transparent
-                }
                 (0..3).forEach { answerIndex ->
                     var color = if (showCorrectAnswer) {
                         when {
@@ -502,7 +496,7 @@ fun QuestionList(modifier: Modifier, onChoose: (index: Int) -> Unit, _choose: In
     }
 }
 
-private fun lerp(start: Float, stop: Float, fraction: Float): Float =
+fun lerp(start: Float, stop: Float, fraction: Float): Float =
     (1 - fraction) * start + fraction * stop
 
 @SuppressLint("RestrictedApi")

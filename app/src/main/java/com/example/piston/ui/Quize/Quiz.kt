@@ -38,6 +38,7 @@ import com.example.piston.ui.Quize.ExamQuizPages.ElementaryResultName
 import com.example.piston.ui.Quize.ExamQuizPages.ElementaryTestListName
 import com.example.piston.ui.Quize.ExamQuizPages.ElementaryTestsName
 import com.example.piston.ui.Quize.ExamQuizPages.FirstTestPageName
+import com.example.piston.ui.Quize.ExamQuizPages.ShowTrueAnswersName
 import com.example.piston.ui.theme.textColor
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.gson.Gson
@@ -49,6 +50,7 @@ object ExamQuizPages {
     var FirstTestPageName = "first_test_page"
     var ElementaryTestListName = "elementary_list_page"
     var ElementaryTestsName = "elementary_test_page"
+    var ShowTrueAnswersName = "show_true_answers_page"
     var ElementaryResultName = "elementary_result_page"
     var AdvanceTestListName = "advanced_page_list"
     var AdvanceTestsName = "advanced_test_page"
@@ -104,6 +106,19 @@ fun QuizPageManger(showBottom: (Boolean) -> Unit) {
             var type = object : TypeToken<QuizResult>() {}.type
             var quizResult = gson.fromJson<QuizResult>(resultString, type)
             ElementaryTestResult(navController, quizResult)
+        }
+        composable(route = "$ShowTrueAnswersName/{result}",
+        arguments = listOf(
+            navArgument("result"){
+                type = NavType.StringType
+                defaultValue = ""
+            }
+        )){
+            var resultString = it.arguments?.getString("result", "") ?: ""
+            var gson = Gson()
+            var type = object : TypeToken<QuizResult>() {}.type
+            var quizResult = gson.fromJson<QuizResult>(resultString, type)
+            ShowTrueAnswer(navController = navController, answers = quizResult.answers, quizList = quizResult.quizList)
         }
     }
 }
@@ -440,7 +455,7 @@ fun ElementaryTestResult(navController: NavHostController, quizResult: QuizResul
     percent *= 100
     viewModel.setQuizPercent(quizResult.quizList[0].test_number,percent.toInt())
     Box(modifier = Modifier.fillMaxSize()) {
-        ExamResultPage(navController = navController, correctAnswerCount, percent)
+        ExamResultPage(navController = navController, correctAnswerCount, percent , quizResult)
     }
 }
 

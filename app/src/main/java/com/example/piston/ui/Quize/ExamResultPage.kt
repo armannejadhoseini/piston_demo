@@ -1,7 +1,5 @@
 package com.example.piston
 
-import android.widget.Toast
-import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,21 +12,25 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleObserver
 import androidx.navigation.NavHostController
 import com.example.piston.ui.Quize.ExamQuizPages
+import com.example.piston.ui.Quize.QuizResult
 import com.example.piston.ui.theme.textColor
+import com.google.gson.Gson
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 @Composable
-fun ExamResultPage(navController: NavHostController, correctAnswerCount: Int, percent: Float) {
+fun ExamResultPage(
+    navController: NavHostController,
+    correctAnswerCount: Int,
+    percent: Float,
+    quizResult: QuizResult
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar(
@@ -52,7 +54,7 @@ fun ExamResultPage(navController: NavHostController, correctAnswerCount: Int, pe
                 Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                correctAnswerCount, percent
+                correctAnswerCount, percent , navController , quizResult
             )
         }
     }
@@ -179,7 +181,13 @@ fun TopBar(modifier: Modifier, text: String, onBackPress: () -> Unit) {
 data class Result(val color: Int, val title1: Int, val title2: Int, val bodyText: Int)
 
 @Composable
-fun Body(modifier: Modifier, correctAnswerCount: Int, percent: Float) {
+fun Body(
+    modifier: Modifier,
+    correctAnswerCount: Int,
+    percent: Float,
+    navController: NavHostController,
+    quizResult: QuizResult
+) {
     var result = when (percent) {
         in 0f..50f -> {
             Result(
@@ -232,7 +240,10 @@ fun Body(modifier: Modifier, correctAnswerCount: Int, percent: Float) {
             backColor = colorResource(
                 id = R.color.textColors
             ),
-            textColor = Color.White
+            textColor = Color.White ,
+            onClick = {
+                navController.popBackStack()
+            }
         )
         CustomButton(
             title = stringResource(id = R.string.ShowTrueAnswer_txt), modifier = Modifier
@@ -241,7 +252,10 @@ fun Body(modifier: Modifier, correctAnswerCount: Int, percent: Float) {
                 .weight(1f), shape = RoundedCornerShape(8.dp), backColor = colorResource(
                 id = R.color.textColor_deep_blue
             ), textColor = Color.White
-        )
+        ){
+            var quizResultJson = Gson().toJson(quizResult)
+            navController.navigate(route = "${ExamQuizPages.ShowTrueAnswersName}/$quizResultJson")
+        }
     }
 }
 
@@ -251,7 +265,8 @@ fun CustomButton(
     modifier: Modifier,
     shape: Shape,
     backColor: Color,
-    textColor: Color
+    textColor: Color,
+    onClick:()->Unit
 ) {
     Card(
         modifier = modifier,
@@ -262,7 +277,10 @@ fun CustomButton(
             text = title,
             modifier = Modifier
                 .fillMaxWidth(0.5f)
-                .fillMaxHeight(),
+                .fillMaxHeight()
+                .clickable {
+                    onClick()
+                },
             color = textColor
         )
     }
