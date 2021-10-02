@@ -408,9 +408,15 @@ fun ElementaryTestsPage(
     number: Int,
     viewModel: ViewModel = viewModel()
 ) {
-    var list = viewModel.quizList(number)
-        .collectAsState(initial = null, context = Dispatchers.IO)
-    list.value?.let {
+    var list:List<QuizModel>? by remember{
+        mutableStateOf(null)
+    }
+    LaunchedEffect(key1 = "start"){
+        launch(Dispatchers.IO){
+            list = viewModel.getQuizList(number)
+        }
+    }
+    list?.let {
         ExamTestPage(navController, it)
     }
 }

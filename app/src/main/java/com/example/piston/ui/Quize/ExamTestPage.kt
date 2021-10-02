@@ -2,6 +2,7 @@ package com.example.piston
 
 import android.annotation.SuppressLint
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -57,6 +58,7 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
     var choose by remember {
         mutableStateOf(0)
     }
+    Log.i("TAG000", "ExamTestPage: ${quizList.size}")
     var scope = rememberCoroutineScope()
     var countDownTimer by remember{
         mutableStateOf<CountDownTimer?>(null)
@@ -77,6 +79,7 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
                 countDownTimer?.cancel()
             },
             onFinish = {
+                countDownTimer?.cancel()
                 val quizResult = QuizResult(selectedAnswerList, quizList)
                 val quizResultJson = Gson().toJson(quizResult)
                 navController.navigate("${ElementaryResultName}/$quizResultJson")
@@ -103,7 +106,7 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
                 state.animateScrollToPage(it)
             }
             choose = it
-        }, choose, quizList.size)
+        }, choose, 30)
     }
 }
 

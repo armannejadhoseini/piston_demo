@@ -12,7 +12,10 @@ import com.example.myapplication.domain.model.LectureList
 import com.example.myapplication.domain.model.QuizModel
 import com.example.myapplication.domain.model.TestPercentEntity
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 
 class ViewModel(application: Application) : AndroidViewModel(application) {
     val db = Room.databaseBuilder(
@@ -47,6 +50,11 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
         emit(allTestModelMapper_Imp.AllTestEntityToTestModel(quizList.toAllTestList()))
     }
 
+    suspend fun getQuizList(number: Int): List<QuizModel> {
+        var quizList = db.listDao().getQuizList(number.toLong())
+        return allTestModelMapper_Imp.AllTestEntityToTestModel(quizList.toAllTestList())
+    }
+
 
     val examPercentList = flow<List<TestPercentEntity>?> {
         val list = db.listDao().getExamPercentList().toTestPercent()
@@ -58,10 +66,11 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
         emit(list)
     }
 
-    fun setQuizPercent(id: Int,percent: Int) = viewModelScope.launch(Dispatchers.IO){
+    fun setQuizPercent(id: Int, percent: Int) = viewModelScope.launch(Dispatchers.IO) {
         db.listDao().setQuizPercent(id.toLong(), percent.toLong())
     }
-    fun setExamPercent(id: Int,percent: Int) = viewModelScope.launch(Dispatchers.IO) {
+
+    fun setExamPercent(id: Int, percent: Int) = viewModelScope.launch(Dispatchers.IO) {
         db.listDao().setExamPercent(id.toLong(), percent.toLong())
     }
 

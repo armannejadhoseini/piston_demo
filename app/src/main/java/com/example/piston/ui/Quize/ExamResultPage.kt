@@ -1,5 +1,7 @@
 package com.example.piston
 
+import android.widget.Toast
+import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,10 +14,13 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleObserver
 import androidx.navigation.NavHostController
 import com.example.piston.ui.Quize.ExamQuizPages
 import com.example.piston.ui.theme.textColor
@@ -38,7 +43,7 @@ fun ExamResultPage(navController: NavHostController, correctAnswerCount: Int, pe
                 stringResource(id = R.string.TestResulteTitle)
             ) {
                 navController.popBackStack(
-                    route = ExamQuizPages.FirstTestPageName,
+                    route = ExamQuizPages.ElementaryTestListName,
                     inclusive = false,
                     saveState = false
                 )
