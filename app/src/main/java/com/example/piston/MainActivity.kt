@@ -104,7 +104,7 @@ class MainActivity : ComponentActivity() {
                 composable(Screen.Home.route) { Home() }
                 composable(Screen.Lessons.route) { Lessons(navController) }
                 composable(Screen.Quizes.route) { Quizes() }
-                composable(Screen.More.route) { More(navController) }
+                composable(Screen.More.route) { more(navController) }
                 composable(
                     "Lessons_menu/{courses_name}",
                     arguments = listOf(navArgument("courses_name") {
@@ -151,6 +151,31 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
+                }
+                composable(Screen.SignIn.route) {
+                    SignIn(navController)
+                }
+
+                composable("SignInBack") {
+                    more(navController)
+
+                }
+
+                composable(
+                    route = Screen.SignInVerifyCode.route + "/{fullName}/{phone}",
+                    arguments = listOf(navArgument("fullName") { type = NavType.StringType },
+                        navArgument("phone") {
+                            type = NavType.StringType
+                        })
+                )
+
+                { navBackStack ->
+                    val fullName = navBackStack.arguments?.getString("fullName")
+                    SignInVerifyCode(
+                        navController,
+                        fullNameInputed = fullName,
+                        phoneInputed = navBackStack.arguments?.getString("phone")
+                    )
                 }
             }
         }

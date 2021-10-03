@@ -1,15 +1,12 @@
 package com.example.piston
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.navigation.NavController
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -19,22 +16,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavDirections
-import androidx.navigation.Navigation.findNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.data.Screen
-import com.example.piston.ui.theme.PistonTheme
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun SignIn(navController: NavController) {
-    val viewModelRetrofit: ViewModelRetrofit = ViewModelRetrofit()
-    var phone by rememberSaveable { mutableStateOf("") }
-    var fullName:String by rememberSaveable { mutableStateOf("") }
-    var resultText: String = "ارسال کد تایید"
+fun SignInVerifyCode(
+    navController: NavController,
+    fullNameInputed: String?,
+    phoneInputed: String?
+) {
+    val viewModelRetrofit: ViewModelRetrofit = viewModel()
 
+    var phone by remember { mutableStateOf("") }
+    var fullName by remember { mutableStateOf("") }
+    var code by remember { mutableStateOf("") }
+    var checkCode: Int? = null
+    var codePlaceHolderText: String by remember {
+        mutableStateOf("کد دریافتی")
+
+
+    }
+
+    var codePlaceHolderColor: Color = Color.Gray
+    var resultText: String = "ارسال کد تایید"
+    var isVisible: Boolean = true
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -113,17 +124,16 @@ fun SignIn(navController: NavController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(51.dp)
-            , horizontalArrangement = Arrangement.Center
+                .height(51.dp), horizontalArrangement = Arrangement.Center
 
 
         ) {
 
 
             OutlinedTextField(
-                value = fullName,
+                value = fullNameInputed!!,
                 onValueChange = { newValue ->
-                    fullName = newValue
+                    fullName = fullNameInputed
 
                 },
 
@@ -151,15 +161,15 @@ fun SignIn(navController: NavController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(51.dp)
-            , horizontalArrangement = Arrangement.Center
+                .height(51.dp), horizontalArrangement = Arrangement.Center
+
         ) {
 
 
             OutlinedTextField(
-                value = phone,
+                value = phoneInputed!!,
                 onValueChange = { newValue ->
-                    phone = newValue
+                    phone = phoneInputed
 
                 },
                 placeholder = {
@@ -180,22 +190,50 @@ fun SignIn(navController: NavController) {
             )
 
         }
-        Spacer(modifier = Modifier.padding(100.dp))
+        Spacer(modifier = Modifier.padding(10.dp))
 
+//        if (checkCode == 0) {
+//            code = ""
+//            com.example.piston.codeChecker(
+//                true,
+//                codeValue = code,
+//                codePlaceHolderText = "کد نامعتبر",
+//                codePlaceHolderColor = Color.Red
+//            )
+//        } else {
+//            com.example.piston.codeChecker(
+//                true,
+//                code,
+//                codePlaceHolderText = "کد دریافتی",
+//                codePlaceHolderColor = Color.Gray
+//            )
+//        }
+
+        Spacer(modifier = Modifier.height(100.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
+
             Button(
                 onClick = {
                     //    resultText  =viewModelRetrofit.getCode(phone)
-                    resultText = viewModelRetrofit.getCode(phone)
-                   navController.navigate(Screen.SignInVerifyCode.route+"/$fullName/$phone"  )
 
+                    GlobalScope.launch {
+
+//                       viewModelRetrofit.verifyCode(phone, code, fullName)
+//                        checkCode = viewModelRetrofit.getter()
+//                        Log.d("checkkk", "SignInVerifyCode: "+checkCode)
+
+
+                    }
+                    codePlaceHolderText = "کد نامعتبر"
+                    code = ""
+                    // navController.navigate("SignInInvalidCode/{$fullName}/{$phone}")
 
 
                 },
-                colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(R.color.purple_500)),
+                colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(R.color.light_green)),
                 modifier = Modifier
                     .width(330.dp)
                     .height(45.dp)
@@ -206,7 +244,7 @@ fun SignIn(navController: NavController) {
                 //Text(text = "خرید",style = MaterialTheme.typography.h6)
 
                 Text(
-                    text = resultText,
+                    text = "تایید",
                     fontSize = 16.sp,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
@@ -216,110 +254,6 @@ fun SignIn(navController: NavController) {
 
 
     }
+
 }
 
-
-
-
-
-
-
-
-
-
-
-
-//public class TextFieldState() {
-//    var text: String by mutableStateOf("")
-//}
-
-//@Composable
-//fun textInput(emailState :TextFieldState= remember { TextFieldState() },hint:String){
-//   // var txt by rememberSaveable { mutableStateOf(txt1) }
-//
-//    TextField(
-//        value =emailState.text,
-//        onValueChange = {
-//            emailState.text=it
-//
-//        },
-//        placeholder = { hint }
-//    )
-//
-//}
-
-//fun getCode(code:String, viewModelRetrofit: ViewModelRetrofit  ) {
-//
-//
-//        viewModelRetrofit.getCode(code).observe(this, viewModelRetrofit.liveData<String> ->{
-//
-//
-//
-//    }
-//
-//}
-
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    PistonTheme {
-        val viewModelRetrofit: ViewModelRetrofit = ViewModelRetrofit()
-        var phone by rememberSaveable { mutableStateOf("") }
-        var fullName by rememberSaveable { mutableStateOf("") }
-        var resultText: String = "ارسال کد تایید"
-
-
-        Column() {
-            Row() {
-
-
-                OutlinedTextField(
-                    value = fullName,
-                    onValueChange = { newValue ->
-                        fullName = newValue
-
-                    },
-                    placeholder = { Text("نام و نام خانوادگی") }
-                )
-            }
-            Row() {
-
-
-                OutlinedTextField(
-                    value = phone,
-                    onValueChange = { newValue ->
-                        phone = newValue
-
-                    },
-                    placeholder = { Text("شماره موبایل") }
-                )
-
-                Spacer(modifier = Modifier.padding(200.dp))
-            }
-            Button(
-                onClick = {
-                    //    resultText  =viewModelRetrofit.getCode(phone)
-                    resultText = viewModelRetrofit.getCode(phone)
-
-
-                },
-                colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(R.color.light_gray)),
-                modifier = Modifier
-                    .size(130.dp, 40.dp),
-            )
-            {
-                //Text(text = "خرید",style = MaterialTheme.typography.h6)
-
-                Text(
-                    text = resultText,
-                    fontSize = 16.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-        }
-
-    }
-}

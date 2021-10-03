@@ -10,10 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.LifecycleOwner
 import com.example.data.ApiClient
 import com.example.data.ApiInterface
-import com.orhanobut.hawk.Hawk
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 import com.example.data.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
