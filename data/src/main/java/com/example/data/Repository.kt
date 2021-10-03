@@ -48,7 +48,7 @@ class Repository {
 
         return resultText
     }
-   suspend fun requestVerifyValidationCode(userPhone: String, Code: String, userName: String):LiveData<Int>{
+   suspend fun requestVerifyValidationCode(userPhone: String, Code: String, userName: String):MutableLiveData<Int>{
     // var  checkCode:Int=7
 
          val liveData = MutableLiveData<Int>()

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation.findNavController
 import com.example.data.Screen
@@ -30,7 +31,7 @@ import com.example.piston.ui.theme.PistonTheme
 
 @Composable
 fun SignIn(navController: NavController) {
-    val viewModelRetrofit: ViewModelRetrofit = ViewModelRetrofit()
+    val viewModelRetrofit: ViewModelRetrofit = viewModel()
     var phone by rememberSaveable { mutableStateOf("") }
     var fullName:String by rememberSaveable { mutableStateOf("") }
     var resultText: String = "ارسال کد تایید"
@@ -264,7 +265,7 @@ fun SignIn(navController: NavController) {
 @Composable
 fun DefaultPreview() {
     PistonTheme {
-        val viewModelRetrofit: ViewModelRetrofit = ViewModelRetrofit()
+        val viewModelRetrofit: ViewModelRetrofit = viewModel()
         var phone by rememberSaveable { mutableStateOf("") }
         var fullName by rememberSaveable { mutableStateOf("") }
         var resultText: String = "ارسال کد تایید"

@@ -15,36 +15,35 @@ import com.example.data.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ViewModelRetrofit : ViewModel() {
+class ViewModelRetrofit(application: Application) : AndroidViewModel(application) {
 
 
+    lateinit private var code: String
+    // val liveData: MutableLiveData<String> = MutableLiveData<String>()
 
-    lateinit private var code:String
-   // val liveData: MutableLiveData<String> = MutableLiveData<String>()
 
-
-    fun getCode(phone1:String):String{
-        code= Repository().requestToSendValidationCode(phone1).toString()
+    fun getCode(phone1: String): String {
+        code = Repository().requestToSendValidationCode(phone1).toString()
 
         return code
     }
-    fun verifyCode(phone:String,code:String,fullName:String):LiveData<Int>{
+
+    var invalidCode = MutableLiveData<Int>()
+
+    fun verifyCode(phone: String, code: String, fullName: String){
         viewModelScope.launch {
-            val x= (Repository().requestVerifyValidationCode(phone,code,fullName)).value
-         val   checkCode = getInvalidCode()
+            invalidCode = (Repository().requestVerifyValidationCode(phone, code, fullName))
+//            val checkCode = getInvalidCode()
 
-            Log.d("TAG", "verifyCode: ${checkCode.value}")
-
-
+//            Log.d("TAG", "verifyCode: ${checkCode.value}")
         }
-       return getInvalidCode()
-
+//        return getInvalidCode()
     }
 
-//    fun getter():LiveData<Int>{
+    //    fun getter():LiveData<Int>{
 //        return che
 //    }
-    fun getInvalidCode():LiveData<Int>{
+    fun getInvalidCode(): LiveData<Int> {
         return Repository().getter()
     }
 

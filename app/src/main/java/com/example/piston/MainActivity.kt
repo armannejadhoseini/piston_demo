@@ -1,6 +1,7 @@
 package com.example.piston
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -24,6 +26,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.data.*
+import com.example.piston.presenter.HomeLayout
 import com.example.piston.ui.Quize.QuizPage
 import com.example.piston.ui.theme.ReadingPage
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -40,6 +43,12 @@ class MainActivity : ComponentActivity() {
 
         viewModel.getTheoryListFromDb()
         viewModel.getPracticalListFromDb()
+
+        val viewModelRetrofit:ViewModelRetrofit by viewModels()
+        viewModelRetrofit.verifyCode("09361051762","35496","ali")
+        viewModelRetrofit.invalidCode.observe(this){
+            Log.i("TAG000", "onCreate: $it")
+        }
 
         setContent {
             Ui()
@@ -101,7 +110,7 @@ class MainActivity : ComponentActivity() {
 
         ) {
             NavHost(navController = navController, startDestination = Screen.Home.route) {
-                composable(Screen.Home.route) { Home() }
+                composable(Screen.Home.route) { Home(navController) }
                 composable(Screen.Lessons.route) { Lessons(navController) }
                 composable(Screen.Quizes.route) { Quizes() }
                 composable(Screen.More.route) { more(navController) }
@@ -182,8 +191,8 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun Home() {
-        Text(text = "home")
+    fun Home(navController: NavController) {
+        SignIn(navController)
     }
 
     @ExperimentalFoundationApi
