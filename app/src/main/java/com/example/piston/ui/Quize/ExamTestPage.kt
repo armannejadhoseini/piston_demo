@@ -2,7 +2,6 @@ package com.example.piston
 
 import android.annotation.SuppressLint
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -78,18 +77,14 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
                 )
             })
 
-    var state = rememberPagerState(pageCount = quizList.size)
+
     var (selectedAnswerList, selectedAnswerOnChange) = remember {
         mutableStateOf(initSelectedList(30))
     }
     var correctAnswer by remember {
         mutableStateOf(false)
     }
-    var choose by remember {
-        mutableStateOf(0)
-    }
-    Log.i("TAG000", "ExamTestPage: ${quizList.size}")
-    var scope = rememberCoroutineScope()
+
 
 
     Column(
@@ -115,7 +110,32 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
                 countDownTimer = it
             }
         )
+        TestLayout(
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            quizList,
+            correctAnswer,
+            selectedAnswerList,
+            selectedAnswerOnChange
+        )
+    }
+}
 
+@ExperimentalPagerApi
+@Composable
+fun TestLayout(
+    modifier: Modifier,
+    quizList: List<QuizModel>,
+    correctAnswer: Boolean,
+    selectedAnswerList: List<Int>,
+    selectedAnswerOnChange: (ArrayList<Int>) -> Unit,
+    selectable: Boolean = true
+) {
+    Column(modifier = modifier) {
+        var state = rememberPagerState(pageCount = quizList.size)
+        var choose by remember {
+            mutableStateOf(0)
+        }
+        var scope = rememberCoroutineScope()
         PagerLayout(
             modifier = Modifier
                 .fillMaxWidth()
@@ -125,6 +145,7 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
             correctAnswer,
             selectedAnswerList,
             selectedAnswerOnChange,
+            selectable,
         ) {
             choose = it
         }
@@ -133,8 +154,9 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
                 state.animateScrollToPage(it)
             }
             choose = it
-        }, choose, 30)
+        }, choose, 30 , quizList , selectedAnswerList)
     }
+
 }
 
 @Composable
@@ -219,10 +241,12 @@ fun PagerLayout(
     state: PagerState,
     list: List<QuizModel>,
     showCorrectAnswer: Boolean,
-    selectedAnswerList: ArrayList<Int>,
+    selectedAnswerList: List<Int>,
     selectedAnswerOnChange: (ArrayList<Int>) -> Unit,
-    onPageScroll: (Int) -> Unit
-) {
+    selectable: Boolean,
+    onPageScroll: (Int) -> Unit,
+
+    ) {
 
     HorizontalPager(
         state,
@@ -266,7 +290,8 @@ fun PagerLayout(
                     index,
                     list[index],
                     selectedAnswerList[index],
-                    showCorrectAnswer
+                    showCorrectAnswer,
+                    selectable
                 ) { answerIndex, pageIndex ->
                     val tempList = selectedAnswerList.copy()
                     tempList[pageIndex] = answerIndex
@@ -349,6 +374,7 @@ fun QuestionLayout(
     page: QuizModel,
     selectedAnswer: Int,
     showCorrectAnswer: Boolean,
+    selectable: Boolean,
     onSelectAnswer: (index: Int, pageIndex: Int) -> Unit
 ) {
     var imageList = listOf(
@@ -470,7 +496,7 @@ fun QuestionLayout(
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clickable {
+                                .clickable(selectable) {
                                     onSelectAnswer(answerIndex, index)
                                 }, contentAlignment = Center
                         ) {
@@ -501,14 +527,14 @@ fun QuestionLayout(
                                 Spacer(
                                     modifier = Modifier
                                         .fillMaxHeight()
-                                        .width(16.dp)
+                                        .width(8.dp)
                                 )
 
                                 Box(
                                     modifier = Modifier
                                         .fillMaxHeight(0.8f)
                                         .width(30.dp)
-                                        .align(CenterVertically),contentAlignment = Center
+                                        .align(CenterVertically), contentAlignment = Center
                                 ) {
                                     Text(
                                         text = (answerIndex + 1).toString(),
@@ -542,7 +568,14 @@ fun ComposeImageView(modifier: Modifier, updateImage: (ImageView) -> Unit) {
 
 
 @Composable
-fun QuestionList(modifier: Modifier, onChoose: (index: Int) -> Unit, _choose: Int, count: Int) {
+fun QuestionList(
+    modifier: Modifier,
+    onChoose: (index: Int) -> Unit,
+    _choose: Int,
+    count: Int,
+    quizList: List<QuizModel>,
+    selectedAnswerList: List<Int>
+) {
     var coroutineScope = rememberCoroutineScope()
     var state = rememberLazyListState()
     LazyRow(

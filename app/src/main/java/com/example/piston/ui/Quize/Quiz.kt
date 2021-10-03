@@ -119,7 +119,16 @@ fun QuizPageManger(showBottom: (Boolean) -> Unit) {
             var gson = Gson()
             var type = object : TypeToken<QuizResult>() {}.type
             var quizResult = gson.fromJson<QuizResult>(resultString, type)
-            ShowTrueAnswer(navController = navController, answers = quizResult.answers, quizList = quizResult.quizList)
+            TestLayout(
+                modifier = Modifier.fillMaxSize(),
+                quizList = quizResult.quizList,
+                correctAnswer = true,
+                selectedAnswerList = quizResult.answers,
+                selectedAnswerOnChange = {
+
+                },
+                selectable = false
+            )
         }
     }
 }
@@ -269,7 +278,8 @@ fun AdvancedTestBanner(onPageChange: () -> Unit) {
 
 @Composable
 fun TopBar(modifier: Modifier, text: String, onBackPress: () -> Unit) {
-    Row(modifier = modifier.fillMaxWidth()
+    Row(modifier = modifier
+        .fillMaxWidth()
         .padding(horizontal = 16.dp)) {
         ImageIcon(
             modifier = Modifier

@@ -239,7 +239,8 @@ fun Body(
     }
     Column(modifier = modifier) {
         ShowPercent(
-            percent = percent, title = "$correctAnswerCount" + " درست از 30", modifier = Modifier
+            percent = percent, title = "$correctAnswerCount" + " درست از 30",
+            modifier = Modifier
                 .fillMaxWidth(0.6f)
                 .aspectRatio(1f)
                 .align(CenterHorizontally),
