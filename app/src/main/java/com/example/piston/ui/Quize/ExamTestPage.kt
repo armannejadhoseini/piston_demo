@@ -1,11 +1,13 @@
 package com.example.piston
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
@@ -14,26 +16,31 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.fontResource
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.navigation.NavHostController
 import com.example.myapplication.domain.model.QuizModel
+import com.example.piston.ui.BackPressHandler
 import com.example.piston.ui.Quize.ExamQuizPages.ElementaryResultName
+import com.example.piston.ui.Quize.ExamQuizPages.ElementaryTestListName
+import com.example.piston.ui.Quize.ExitDialog
+import com.example.piston.ui.Quize.ExitDialogProperties
 import com.example.piston.ui.Quize.QuizResult
 
 
@@ -49,6 +56,35 @@ import kotlin.random.Random
 @ExperimentalPagerApi
 @Composable
 fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
+    var countDownTimer by remember {
+        mutableStateOf<CountDownTimer?>(null)
+    }
+
+
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+    BackPressHandler {
+        showDialog = true
+    }
+    if (showDialog)
+        ExitDialog(
+            onDismissRequest = { showDialog = false },
+            properties = DialogProperties(dismissOnClickOutside = false),
+            dataProperties = ExitDialogProperties(
+                stringResource(id = R.string.Exit_btn),
+                stringResource(id = R.string.NeverMind_txt),
+                stringResource(id = R.string.ExitExamTitle),
+                R.drawable.ic_exit_img
+            ),
+            onCancel = { showDialog = false }, onConfirm = {
+                navController.popBackStack(
+                    route = ElementaryTestListName,
+                    inclusive = false,
+                    saveState = false
+                )
+            })
+
     var state = rememberPagerState(pageCount = quizList.size)
     var (selectedAnswerList, selectedAnswerOnChange) = remember {
         mutableStateOf(initSelectedList(30))
@@ -61,9 +97,7 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
     }
     Log.i("TAG000", "ExamTestPage: ${quizList.size}")
     var scope = rememberCoroutineScope()
-    var countDownTimer by remember{
-        mutableStateOf<CountDownTimer?>(null)
-    }
+
 
     Column(
         modifier = Modifier
@@ -76,13 +110,12 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
                 .fillMaxWidth()
                 .weight(1.2f),
             onBackPress = {
-                navController.popBackStack()
-                countDownTimer?.cancel()
+                showDialog = true
             },
             onFinish = {
                 countDownTimer?.cancel()
                 val quizResult = QuizResult(selectedAnswerList.toList(), quizList.toList())
-                val quizResultJson = Gson().toJson(quizResult,QuizResult::class.java)
+                val quizResultJson = Gson().toJson(quizResult, QuizResult::class.java)
                 navController.navigate("${ElementaryResultName}/$quizResultJson")
             },
             onCancel = {
@@ -112,7 +145,12 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
 }
 
 @Composable
-fun TopLayout(modifier: Modifier, onBackPress: () -> Unit, onFinish: () -> Unit,onCancel: (CountDownTimer) -> Unit) {
+fun TopLayout(
+    modifier: Modifier,
+    onBackPress: () -> Unit,
+    onFinish: () -> Unit,
+    onCancel: (CountDownTimer) -> Unit
+) {
     Row(
         modifier = modifier
     ) {
@@ -137,7 +175,8 @@ fun TopLayout(modifier: Modifier, onBackPress: () -> Unit, onFinish: () -> Unit,
                 .fillMaxHeight()
                 .weight(4f), contentAlignment = Center
         ) {
-            TimerLayout(20 * 60 * 1000,
+            TimerLayout(
+                20 * 60 * 1000,
                 onCancel = onCancel,
                 onFinish = onFinish
             )

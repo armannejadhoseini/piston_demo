@@ -1,8 +1,6 @@
 package com.example.piston
 
 
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,9 +18,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.piston.ui.BackPressHandler
 import com.example.piston.ui.Quize.ExamQuizPages
+import com.example.piston.ui.Quize.ExitDialog
+import com.example.piston.ui.Quize.ExitDialogProperties
 import com.example.piston.ui.Quize.QuizResult
 import com.example.piston.ui.theme.textColor
 import com.google.gson.Gson
@@ -36,13 +37,29 @@ fun ExamResultPage(
     percent: Float,
     quizResult: QuizResult
 ) {
-    BackPressHandler{
-        navController.popBackStack(
-            route = ExamQuizPages.ElementaryTestListName,
-            inclusive = false,
-            saveState = false
-        )
+    var showDialog by remember {
+        mutableStateOf(false)
     }
+    BackPressHandler {
+        showDialog = true
+    }
+    if (showDialog)
+        ExitDialog(
+            onDismissRequest = { showDialog = false },
+            properties = DialogProperties(dismissOnClickOutside = false),
+            dataProperties = ExitDialogProperties(
+                stringResource(id = R.string.Exit_btn),
+                stringResource(id = R.string.NeverMind_txt),
+                stringResource(id = R.string.BackToCourseListTitle),
+                R.drawable.ic_exit_img
+            ),
+            onCancel = { showDialog = false }, onConfirm = {
+                navController.popBackStack(
+                    route = ExamQuizPages.ElementaryTestListName,
+                    inclusive = false,
+                    saveState = false
+                )
+            })
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar(
@@ -56,11 +73,7 @@ fun ExamResultPage(
                     ),
                 stringResource(id = R.string.TestResulteTitle)
             ) {
-                navController.popBackStack(
-                    route = ExamQuizPages.ElementaryTestListName,
-                    inclusive = false,
-                    saveState = false
-                )
+                showDialog = true
             }
             Body(
                 Modifier
@@ -285,16 +298,21 @@ fun CustomButton(
         shape = shape,
         backgroundColor = backColor
     ) {
-        AutoSizeText(
-            text = title,
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .fillMaxHeight()
-                .clickable {
-                    onClick()
-                },
-            color = textColor
-        )
+        Box(modifier = Modifier
+            .fillMaxWidth(0.5f)
+            .fillMaxHeight(1f)) {
+            AutoSizeText(
+                text = title,
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .fillMaxHeight()
+                    .clickable {
+                        onClick()
+                    },
+                color = textColor
+            )
+        }
+
     }
 }
 

@@ -31,5 +31,4 @@ fun BackPressHandler(enabled: Boolean = true, onBack: () -> Unit) {
             backCallback.remove()
         }
     }
-
 }
