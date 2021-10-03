@@ -28,8 +28,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -173,7 +175,7 @@ fun TopLayout(
                 .fillMaxHeight()
                 .weight(4f)
                 .align(CenterVertically)
-                .padding(horizontal = 8.dp,vertical = 2.dp), contentAlignment = Center
+                .padding(horizontal = 8.dp, vertical = 2.dp), contentAlignment = Center
         ) {
             TimerLayout(
                 20 * 60 * 1000,
@@ -401,6 +403,27 @@ fun QuestionLayout(
                 }
 
             })
+            fun List<String>.findMaxSize(): Int {
+                var size = 0
+                forEach {
+                    if (it.length > size)
+                        size = it.length
+                }
+                return size
+            }
+            fun List<String>.findMinSize(): Int {
+                var size = first().length
+                forEach {
+                    if (it.length < size)
+                        size = it.length
+                }
+                return size
+            }
+            fun Float.normalize(weight:Float = 0.7f,max:Int): Float {
+                return this+(max - this)*weight
+            }
+            var maxLength = answers.findMaxSize()
+            var minLength = answers.findMinSize()
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -409,7 +432,7 @@ fun QuestionLayout(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
+                        .weight(maxLength.toFloat().normalize(max = maxLength))
                         .padding(4.dp), contentAlignment = Alignment.CenterStart
                 ) {
                     AutoSizeText(
@@ -419,6 +442,7 @@ fun QuestionLayout(
                         gravity = Gravity.START
                     )
                 }
+
                 (0..3).forEach { answerIndex ->
                     var color = if (showCorrectAnswer) {
                         when {
@@ -434,7 +458,7 @@ fun QuestionLayout(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
+                            .weight((answers[answerIndex].length.toFloat().normalize(max = maxLength)))
                             .padding(4.dp),
                         elevation = 4.dp,
                         shape = RoundedCornerShape(16.dp),
@@ -447,15 +471,41 @@ fun QuestionLayout(
                                     onSelectAnswer(answerIndex, index)
                                 }, contentAlignment = Center
                         ) {
+                            var density = LocalDensity.current
                             Row(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(4.dp)
                             ) {
-                                Box(
+                                AutoSizeText(
+                                    text = answers[answerIndex],
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .align(CenterVertically),
+                                    color = colorResource(id = R.color.textColors),
+                                    gravity = Gravity.START or Gravity.CENTER_VERTICAL
+                                ) {
+                                    it.setAutoSizeTextTypeUniformWithConfiguration(
+                                        1,
+                                        with(density) {
+                                            8.sp.toPx().toInt()
+                                        },
+                                        1,
+                                        1
+                                    )
+                                }
+
+                                Spacer(
                                     modifier = Modifier
                                         .fillMaxHeight()
+                                        .width(16.dp)
+                                )
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight(0.8f)
                                         .aspectRatio(0.7f)
+                                        .align(CenterVertically)
                                 ) {
                                     AutoSizeText(
                                         text = (answerIndex + 1).toString(),
@@ -463,12 +513,6 @@ fun QuestionLayout(
                                         color = Color.Gray
                                     )
                                 }
-                                AutoSizeText(
-                                    text = answers[answerIndex],
-                                    modifier = Modifier.weight(1f),
-                                    color = Color.Gray,
-                                    gravity = Gravity.START
-                                )
                             }
                         }
 
