@@ -1,52 +1,33 @@
 package com.example.piston
 
-import android.content.Context
-import android.widget.Toast
+
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.navigation.NavHostController
+import com.example.piston.ui.BackPressHandler
 import com.example.piston.ui.Quize.ExamQuizPages
 import com.example.piston.ui.Quize.QuizResult
 import com.example.piston.ui.theme.textColor
 import com.google.gson.Gson
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
-
-
-open class A(var name: String) {
-    operator fun plus(b: A): A {
-        val name = this.name + b.name
-        return A(name)
-    }
-    fun <T : A> print(context: Context, value: T) {
-        Toast.makeText(context, value.name, Toast.LENGTH_SHORT).show()
-    }
-}
-
-
-fun test() {
-    var a = A("ali")
-    var b = A("nima")
-    var c = a + b
-}
 
 @Composable
 fun ExamResultPage(
@@ -55,7 +36,13 @@ fun ExamResultPage(
     percent: Float,
     quizResult: QuizResult
 ) {
-
+    BackPressHandler{
+        navController.popBackStack(
+            route = ExamQuizPages.ElementaryTestListName,
+            inclusive = false,
+            saveState = false
+        )
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar(
