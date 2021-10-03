@@ -1,17 +1,13 @@
 package com.example.piston
 
 import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,16 +23,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.*
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.widget.ImageViewCompat
 import androidx.navigation.NavHostController
 import com.example.myapplication.domain.model.QuizModel
 import com.example.piston.ui.BackPressHandler
@@ -411,6 +403,7 @@ fun QuestionLayout(
                 }
                 return size
             }
+
             fun List<String>.findMinSize(): Int {
                 var size = first().length
                 forEach {
@@ -419,9 +412,11 @@ fun QuestionLayout(
                 }
                 return size
             }
-            fun Float.normalize(weight:Float = 0.7f,max:Int): Float {
-                return this+(max - this)*weight
+
+            fun Float.coerceToWeight(weight: Float = 0.7f, max: Int): Float {
+                return this.coerceIn(max * weight, max.toFloat()) / max.toFloat()
             }
+
             var maxLength = answers.findMaxSize()
             var minLength = answers.findMinSize()
             Column(
@@ -432,7 +427,11 @@ fun QuestionLayout(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(maxLength.toFloat().normalize(max = maxLength))
+                        .weight(
+                            maxLength
+                                .toFloat()
+                                .coerceToWeight(max = maxLength)
+                        )
                         .padding(4.dp), contentAlignment = Alignment.CenterStart
                 ) {
                     AutoSizeText(
@@ -458,7 +457,11 @@ fun QuestionLayout(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight((answers[answerIndex].length.toFloat().normalize(max = maxLength)))
+                            .weight(
+                                (answers[answerIndex].length
+                                    .toFloat()
+                                    .coerceToWeight(max = maxLength))
+                            )
                             .padding(4.dp),
                         elevation = 4.dp,
                         shape = RoundedCornerShape(16.dp),
@@ -504,12 +507,12 @@ fun QuestionLayout(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxHeight(0.8f)
-                                        .aspectRatio(0.7f)
-                                        .align(CenterVertically)
+                                        .width(30.dp)
+                                        .align(CenterVertically),contentAlignment = Center
                                 ) {
-                                    AutoSizeText(
+                                    Text(
                                         text = (answerIndex + 1).toString(),
-                                        modifier = Modifier.fillMaxSize(),
+                                        fontSize = 15.sp,
                                         color = Color.Gray
                                     )
                                 }
