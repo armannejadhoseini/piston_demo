@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -33,6 +34,7 @@ import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 import com.example.piston.R
+import com.example.piston.ui.theme.textColor
 
 @ExperimentalPagerApi
 @Composable
@@ -63,7 +65,7 @@ fun TestLayout(
         ) {
             choose = it
         }
-        QuestionList(modifier = Modifier.height(40.dp), onChoose = {
+        QuestionList(modifier = Modifier.height(60.dp), onChoose = {
             scope.launch {
                 state.animateScrollToPage(it)
             }
@@ -80,6 +82,7 @@ fun initSelectedList(size: Int): ArrayList<Int> {
     }
     return list
 }
+
 @ExperimentalPagerApi
 @Composable
 fun PagerLayout(
@@ -315,7 +318,8 @@ fun QuestionLayout(
                                     modifier = Modifier
                                         .fillMaxHeight(0.8f)
                                         .width(30.dp)
-                                        .align(Alignment.CenterVertically), contentAlignment = Alignment.Center
+                                        .align(Alignment.CenterVertically),
+                                    contentAlignment = Alignment.Center
                                 ) {
                                     Text(
                                         text = (answerIndex + 1).toString(),
@@ -369,7 +373,7 @@ fun QuestionList(
                 state.animateScrollToItem(_choose)
         }
         items(count) { index ->
-            val color =  if (correctAnswer) {
+            val color = if (correctAnswer) {
                 if (quizList[index].true_answer == selectedAnswerList[index]) {
                     if (index == _choose) {
                         colorResource(id = R.color.selectedGreen)
@@ -387,35 +391,51 @@ fun QuestionList(
                         colorResource(id = R.color.un_selectedRed)
                 }
             } else {
-                if(_choose == index){
+                if (_choose == index) {
                     colorResource(id = R.color.selectedYellow)
                 } else {
-                    if(selectedAnswerList[index]!=-1){
+                    if (selectedAnswerList[index] != -1) {
                         colorResource(id = R.color.textColor_deep_blue)
                     } else {
                         colorResource(id = R.color.light_blue)
                     }
                 }
             }
-            Card(
+            Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .aspectRatio(1f)
-                    .padding(4.dp),
-                backgroundColor = color
+                    .aspectRatio(3 / 4f)
             ) {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        onChoose(index)
-                    }) {
-                    AutoSizeText(
-                        text = (index + 1).toString(), modifier = Modifier
-                            .align(Alignment.Center)
-                            .fillMaxSize(), color = Color.White
-                    )
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .padding(4.dp),
+                    backgroundColor = color
+                ) {
+                    Box(modifier = Modifier
+                        .fillMaxSize()
+                        .clickable {
+                            onChoose(index)
+                        }) {
+                        AutoSizeText(
+                            text = (index + 1).toString(), modifier = Modifier
+                                .align(Alignment.Center)
+                                .fillMaxSize(), color = Color.White
+                        )
+                    }
                 }
+                if (_choose == index)
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(1.dp)
+                    ) {
+                        drawCircle(textColor)
+                    }
             }
+
         }
     }
 }
