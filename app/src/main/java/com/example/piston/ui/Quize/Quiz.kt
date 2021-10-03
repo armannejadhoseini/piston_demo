@@ -13,6 +13,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -268,16 +269,18 @@ fun AdvancedTestBanner(onPageChange: () -> Unit) {
 
 @Composable
 fun TopBar(modifier: Modifier, text: String, onBackPress: () -> Unit) {
-    Row(modifier = modifier.fillMaxWidth()) {
+    Row(modifier = modifier.fillMaxWidth()
+        .padding(horizontal = 16.dp)) {
         ImageIcon(
             modifier = Modifier
-                .size(40.dp)
+                .size(30.dp)
                 .align(Alignment.CenterVertically),
-            backColor = Color.Blue,
+            backColor = colorResource(id = R.color.light_blue),
             image = R.drawable.ic_back,
             clickable = {
                 onBackPress()
-            }
+            },
+            shape = RoundedCornerShape(8.dp)
         )
         Spacer(
             modifier = Modifier
@@ -287,10 +290,13 @@ fun TopBar(modifier: Modifier, text: String, onBackPress: () -> Unit) {
         AutoSizeText(
             text = text,
             modifier = Modifier
-                .fillMaxHeight(0.8f)
-                .weight(2f),
+                .fillMaxHeight(0.6f)
+                .weight(2f)
+                .align(CenterVertically),
             color = textColor
-        )
+        ){
+            it.gravity = Gravity.RIGHT
+        }
 
     }
 }

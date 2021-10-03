@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.*
@@ -59,8 +60,6 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
     var countDownTimer by remember {
         mutableStateOf<CountDownTimer?>(null)
     }
-
-
     var showDialog by remember {
         mutableStateOf(false)
     }
@@ -108,7 +107,7 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
         TopLayout(
             Modifier
                 .fillMaxWidth()
-                .weight(1.2f),
+                .height(60.dp),
             onBackPress = {
                 showDialog = true
             },
@@ -135,7 +134,7 @@ fun ExamTestPage(navController: NavHostController, quizList: List<QuizModel>) {
         ) {
             choose = it
         }
-        QuestionList(modifier = Modifier.weight(1f), onChoose = {
+        QuestionList(modifier = Modifier.height(40.dp), onChoose = {
             scope.launch {
                 state.animateScrollToPage(it)
             }
@@ -152,14 +151,13 @@ fun TopLayout(
     onCancel: (CountDownTimer) -> Unit
 ) {
     Row(
-        modifier = modifier
+        modifier = modifier.padding(horizontal = 16.dp)
     ) {
         Card(
             modifier = Modifier
-                .fillMaxHeight(1f)
-                .weight(1f)
-                .padding(6.dp),
-            shape = RoundedCornerShape(16.dp),
+                .size(30.dp)
+                .align(CenterVertically),
+            shape = RoundedCornerShape(8.dp),
             backgroundColor = Color(150, 150, 250)
         ) {
             Image(
@@ -173,7 +171,9 @@ fun TopLayout(
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(4f), contentAlignment = Center
+                .weight(4f)
+                .align(CenterVertically)
+                .padding(horizontal = 8.dp,vertical = 2.dp), contentAlignment = Center
         ) {
             TimerLayout(
                 20 * 60 * 1000,
@@ -183,10 +183,10 @@ fun TopLayout(
         }
         Card(
             modifier = Modifier
-                .fillMaxHeight()
-                .padding(start = 4.dp, bottom = 4.dp, top = 4.dp, end = 4.dp)
-                .weight(1f), backgroundColor = Color(150, 150, 250),
-            shape = RoundedCornerShape(16.dp)
+                .width(80.dp)
+                .height(40.dp)
+                .align(CenterVertically), backgroundColor = Color(150, 150, 250),
+            shape = RoundedCornerShape(8.dp)
         ) {
             Box(modifier = Modifier
                 .fillMaxSize()

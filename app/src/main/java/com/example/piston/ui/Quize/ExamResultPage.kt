@@ -21,10 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.piston.ui.BackPressHandler
-import com.example.piston.ui.Quize.ExamQuizPages
-import com.example.piston.ui.Quize.ExitDialog
-import com.example.piston.ui.Quize.ExitDialogProperties
-import com.example.piston.ui.Quize.QuizResult
+import com.example.piston.ui.Quize.*
 import com.example.piston.ui.theme.textColor
 import com.google.gson.Gson
 import kotlin.math.roundToInt
@@ -176,32 +173,32 @@ fun ImageIcon(
 }
 
 
-@Composable
-fun TopBar(modifier: Modifier, text: String, onBackPress: () -> Unit) {
-    Row(modifier = modifier.fillMaxWidth()) {
-        ImageIcon(
-            modifier = Modifier
-                .size(40.dp)
-                .align(Alignment.CenterVertically),
-            backColor = Color.Blue,
-            image = R.drawable.ic_back,
-            clickable = onBackPress
-        )
-        Spacer(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(1f)
-        )
-        AutoSizeText(
-            text = text,
-            modifier = Modifier
-                .fillMaxHeight(0.8f)
-                .weight(2f),
-            color = textColor
-        )
-
-    }
-}
+//@Composable
+//fun TopBar(modifier: Modifier, text: String, onBackPress: () -> Unit) {
+//    Row(modifier = modifier.fillMaxWidth()) {
+//        ImageIcon(
+//            modifier = Modifier
+//                .size(40.dp)
+//                .align(Alignment.CenterVertically),
+//            backColor = Color.Blue,
+//            image = R.drawable.ic_back,
+//            clickable = onBackPress
+//        )
+//        Spacer(
+//            modifier = Modifier
+//                .fillMaxHeight()
+//                .weight(1f)
+//        )
+//        AutoSizeText(
+//            text = text,
+//            modifier = Modifier
+//                .fillMaxHeight(0.8f)
+//                .weight(2f),
+//            color = textColor
+//        )
+//
+//    }
+//}
 
 data class Result(val color: Int, val title1: Int, val title2: Int, val bodyText: Int)
 
