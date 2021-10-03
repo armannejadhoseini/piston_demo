@@ -15,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -122,7 +121,7 @@ fun QuizPageManger(showBottom: (Boolean) -> Unit) {
             TestLayout(
                 modifier = Modifier.fillMaxSize(),
                 quizList = quizResult.quizList,
-                correctAnswer = true,
+                showCorrectAnswer = true,
                 selectedAnswerList = quizResult.answers,
                 selectedAnswerOnChange = {
 

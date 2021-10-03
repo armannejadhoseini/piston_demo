@@ -28,4 +28,12 @@
 <color name="traffic_yellow">#42FFC96D</color>
 <color name="traffic_green">#4207D322</color>
 <color name="boronz">#cd5832</color>
+
+
+    <color name="selectedRed">#FB192D</color>
+    <color name="un_selectedRed">#A32222</color>
+    <color name="selectedYellow">#E7D42A</color>
+    <color name="un_selectedYellow">#8C8120</color>
+    <color name="selectedGreen">#3CF184</color>
+    <color name="un_selectedGreen">#1F8A24</color>
 </resources>
