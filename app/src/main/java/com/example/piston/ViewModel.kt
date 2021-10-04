@@ -2,6 +2,7 @@ package com.example.piston
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.data.mappers.LectureMapper_Imp
@@ -45,6 +46,15 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
         emit(allTestModelMapper_Imp.AllTestEntityToTestModel(examList.toAllTestList()))
     }
 
+    fun getQuizList2(number: Int): MutableLiveData<List<QuizModel>> {
+        val liveData = MutableLiveData<List<QuizModel>>()
+        viewModelScope.launch(Dispatchers.IO) {
+            var quizList = db.listDao().getQuizList(number.toLong())
+            liveData.postValue(allTestModelMapper_Imp.AllTestEntityToTestModel(quizList.toAllTestList()))
+        }
+        return liveData
+    }
+
     fun quizList(number: Int) = flow<List<QuizModel>?> {
         var quizList = db.listDao().getQuizList(number.toLong())
         emit(allTestModelMapper_Imp.AllTestEntityToTestModel(quizList.toAllTestList()))
@@ -76,7 +86,7 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getPracticalListFromDb() {
         viewModelScope.launch(Dispatchers.IO) {
-            val tempList1 = db.listDao().getPracticalCourseList()
+//            val tempList1 = db.listDao().getPracticalCourseList()
 //            val tempList2 = db.listDao().getTestList(
 //                intArrayOf(56, 76, 77, 98, 92, 225, 112, 57, 211, 43, 2, 221, 73, 70, 1, 244)
 //            )
@@ -86,7 +96,7 @@ class ViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getTheoryListFromDb() {
         viewModelScope.launch(Dispatchers.IO) {
-            val tempList1 = db.listDao().getTheoryCourseList()
+//            val tempList1 = db.listDao().getTheoryCourseList()
 //            val tempList2 = db.listDao().getTestList(
 //                intArrayOf(107, 201, 60, 198, 216, 84, 167, 245)
 //            )

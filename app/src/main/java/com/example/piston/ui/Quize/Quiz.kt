@@ -1,10 +1,8 @@
 package com.example.piston.ui.Quize
 
+import android.content.res.ColorStateList
 import android.view.Gravity
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -15,7 +13,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -108,12 +109,12 @@ fun QuizPageManger(showBottom: (Boolean) -> Unit) {
             ElementaryTestResult(navController, quizResult)
         }
         composable(route = "$ShowTrueAnswersName/{result}",
-        arguments = listOf(
-            navArgument("result"){
-                type = NavType.StringType
-                defaultValue = ""
-            }
-        )){
+            arguments = listOf(
+                navArgument("result") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )) {
             var resultString = it.arguments?.getString("result", "") ?: ""
             var gson = Gson()
             var type = object : TypeToken<QuizResult>() {}.type
@@ -139,11 +140,12 @@ fun FirstTestPage(navController: NavHostController) {
             .fillMaxSize()
             .padding(4.dp)
             .background(color = colorResource(id = R.color.layout_background))
+            .verticalScroll(state = rememberScrollState())
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(1f)
-                .aspectRatio(4f)
+                .height(80.dp)
         ) {
             AutoSizeText(
                 text = stringResource(id = R.string.TestCategoryTitle_txt),
@@ -165,6 +167,7 @@ fun FirstTestPage(navController: NavHostController) {
         AdvancedTestBanner {
             navController.navigate(route = ExamQuizPages.AdvanceTestListName)
         }
+        Spacer(modifier = Modifier.padding(vertical = 30.dp))
     }
 }
 
@@ -277,9 +280,11 @@ fun AdvancedTestBanner(onPageChange: () -> Unit) {
 
 @Composable
 fun TopBar(modifier: Modifier, text: String, onBackPress: () -> Unit) {
-    Row(modifier = modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp)) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
         ImageIcon(
             modifier = Modifier
                 .size(30.dp)
@@ -303,7 +308,7 @@ fun TopBar(modifier: Modifier, text: String, onBackPress: () -> Unit) {
                 .weight(2f)
                 .align(CenterVertically),
             color = textColor
-        ){
+        ) {
             it.gravity = Gravity.RIGHT
         }
 
@@ -341,6 +346,19 @@ fun TestListLayout(
         ) {
             list.forEachIndexed { index, item ->
                 item {
+                    val color = when (item.percent) {
+                        0 -> android.R.color.darker_gray
+                        in 1..50 -> {
+                            R.color.trikyRed
+                        }
+                        in 51..79 -> {
+                            R.color.golden
+                        }
+                        in 80..100 -> {
+                            R.color.light_green
+                        }
+                        else -> R.color.light_green
+                    }
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -379,7 +397,7 @@ fun TestListLayout(
                                     .fillMaxWidth(0.2f)
                                     .weight(1f)
                                     .align(Alignment.CenterHorizontally),
-                                color = textColor
+                                color = colorResource(id = color)
                             ) {
                                 it.setLines(1)
                             }
@@ -389,7 +407,7 @@ fun TestListLayout(
                                     .fillMaxWidth()
                                     .weight(0.4f),
                                 color = colorResource(
-                                    id = R.color.courcesBlue
+                                    id = color
                                 )
                             )
                         }
@@ -438,12 +456,13 @@ fun ElementaryTestsPage(
     number: Int,
     viewModel: ViewModel = viewModel()
 ) {
-    var list:List<QuizModel>? by remember{
+    var list: List<QuizModel>? by remember {
         mutableStateOf(null)
     }
-    LaunchedEffect(key1 = "start"){
-        launch(Dispatchers.IO){
-            list = viewModel.getQuizList(number)
+    var lifeCycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(key1 = "start") {
+        viewModel.getQuizList2(number).observe(lifeCycleOwner) {
+            list = it
         }
     }
     list?.let {
@@ -457,7 +476,11 @@ fun AdvancedTestsPage() {
 }
 
 @Composable
-fun ElementaryTestResult(navController: NavHostController, quizResult: QuizResult,viewModel: ViewModel = viewModel()) {
+fun ElementaryTestResult(
+    navController: NavHostController,
+    quizResult: QuizResult,
+    viewModel: ViewModel = viewModel()
+) {
     var correctAnswerCount = 0
     var answers = quizResult.answers
     var testList = quizResult.quizList
@@ -468,9 +491,9 @@ fun ElementaryTestResult(navController: NavHostController, quizResult: QuizResul
     }
     var percent = correctAnswerCount / answers.size.toFloat()
     percent *= 100
-    viewModel.setQuizPercent(quizResult.quizList[0].test_number,percent.toInt())
+    viewModel.setQuizPercent(quizResult.quizList[0].test_number, percent.toInt())
     Box(modifier = Modifier.fillMaxSize()) {
-        ExamResultPage(navController = navController, correctAnswerCount, percent , quizResult)
+        ExamResultPage(navController = navController, correctAnswerCount, percent, quizResult)
     }
 }
 
