@@ -289,7 +289,7 @@ fun SignInVerifyCode(
 
                     //    resultText  =viewModelRetrofit.getCode(phone)
                     //  navController.navigate(Screen.SignInVerifyCode.route+"/$fullName/$phone"+codeInputed  )
-
+                            Log.d("newww", "onCreate: $code")
 
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(R.color.light_green)),
