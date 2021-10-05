@@ -12,13 +12,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.key.Key.Companion.Home
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
@@ -166,6 +162,9 @@ class MainActivity : ComponentActivity() {
                 composable(Screen.SignIn.route) {
                     SignIn(navController)
                 }
+                composable(Screen.Profile.route) {
+                    Profile(navController)
+                }
 
                 composable("SignInBack") {
                     more(navController)
@@ -173,26 +172,26 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable(
-                    route = Screen.SignInVerifyCode.route + "/{fullName}/{phone}",
+                    route = Screen.SignVerifyCode.route + "/{fullName}/{phone}",
                     arguments = listOf(navArgument("fullName") {
                         type = NavType.StringType
                     },
                         navArgument("phone") {
                             type = NavType.StringType
                         })
-//                        //, (navArgument("code") {
+//                        //, (navArgument("LifecycleOwner") {
 //                            type = NavType.StringType
 //                        })
 
                 ) { navBackStackEntry ->
-                    SignInVerifyCode(
+                    SignVerifyCode(
                         navController,
                         fullNameInputed = navBackStackEntry.arguments?.getString("fullName"),
                         phoneInputed = navBackStackEntry.arguments?.getString("phone"), ""
                     )
                 }
                 composable(
-                    route = Screen.SignInVerifyCode1.route + "/{fullName}/{phone}/{code}",
+                    route = Screen.SignInvalidCode.route + "/{fullName}/{phone}/{code}",
                     arguments = listOf(navArgument("fullName") {
                         type = NavType.StringType
                     },
@@ -204,7 +203,7 @@ class MainActivity : ComponentActivity() {
                     )
 
                 ) { navBackStackEntry ->
-                    SignInVerifyCode(
+                    SignInvalidCode(
                         navController,
                         fullNameInputed = navBackStackEntry.arguments?.getString("fullName"),
                         phoneInputed = navBackStackEntry.arguments?.getString("phone"),

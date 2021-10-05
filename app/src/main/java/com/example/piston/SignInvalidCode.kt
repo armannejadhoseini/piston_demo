@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -28,10 +29,12 @@ import com.example.data.Screen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newCoroutineContext
+import java.security.acl.Owner
 
 
 @Composable
-fun SignInVerifyCode(
+fun SignInvalidCode(
     navController: NavController,
     fullNameInputed: String?,
     phoneInputed: String?,
@@ -40,6 +43,9 @@ fun SignInVerifyCode(
 ) {
     val viewModelRetrofit: ViewModelRetrofit = viewModel()
     var LifecycleOwner = LocalLifecycleOwner.current
+    var Lf by rememberSaveable {
+        mutableStateOf(LifecycleOwner)
+    }
     var phone:String?=     phoneInputed
     var fullName:String?=fullNameInputed
     var code by rememberSaveable { mutableStateOf("") }
@@ -254,21 +260,22 @@ fun SignInVerifyCode(
             horizontalArrangement = Arrangement.Center
         ) {
 
-            var LifecycleOwner = LocalLifecycleOwner.current
             val coroutineScope = rememberCoroutineScope()
 
             Button(
 
 
                         onClick = {
+                            var b=true
                             Log.d("bb1", "onCreate: $code")
+                          //  var LifecycleOwner = LocalLifecycleOwner.current
 
                   coroutineScope.launch(Dispatchers.Unconfined)
                   {if(b){
-                        Log.d("bb", "onCreate: $code")
+                        Log.d("ggggg", "onCreate: $code/$phone/$fullName")
                         viewModelRetrofit.verifyCode(phone!!, code, fullName!! )
 
-                        viewModelRetrofit.invalidCode.observe(LifecycleOwner) {
+                        viewModelRetrofit.invalidCode.observe(Lf) {
                             Log.d("TAG000", "onCreate: $it")
                             if(it==0)
                             {
@@ -278,7 +285,7 @@ fun SignInVerifyCode(
                             if(it==1)
                             {
 
-                                code = "ok"
+                                navController.navigate(Screen.Profile.route)
                             }
                         }
 
