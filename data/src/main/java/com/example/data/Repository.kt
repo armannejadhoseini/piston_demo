@@ -6,15 +6,18 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.data.entities.apiModel.VerifyAccountModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class Repository {
     var resultText: String? = null
-  public  val liveDataInvalidCode = MutableLiveData<Int>()
+    public val liveDataInvalidCode = MutableLiveData<Int>()
 
 
     fun requestToSendValidationCode(phone: String): String? {
@@ -48,52 +51,60 @@ class Repository {
 
         return resultText
     }
-   suspend fun requestVerifyValidationCode(userPhone: String, Code: String, userName: String):MutableLiveData<Int>{
-    // var  checkCode:Int=7
 
-         val liveData = MutableLiveData<Int>()
+    suspend fun requestVerifyValidationCode(
+        userPhone: String,
+        Code: String,
+        userName: String
+    ): MutableLiveData<Int> {
+        // var  checkCode:Int=7
+
+        val liveData = MutableLiveData<Int>()
+        val task = GlobalScope.launch(Dispatchers.IO) {
+
+            val apiService: ApiInterface =
+                ApiClient.getApiClient(ApiClient.BASE_URL)!!.create(ApiInterface::class.java)
+            val call: Call<Int> = apiService.verifyValidationCode(userPhone, Code, userName)
+
+            call.enqueue(object : Callback<Int> {
+                @SuppressLint("UseCompatLoadingForDrawables")
+
+                override fun onResponse(call: Call<Int>, response: Response<Int>) {
+
+                    if (response.isSuccessful) {
+                        if (response.body() == 1) {
+                            //  verifyAccountType(userPhone,userName)
+                            liveData.value = response.body()!!
+                            Log.d("Fexxxx", "onResponse: ${liveData.value}")
 
 
-
-        val apiService: ApiInterface = ApiClient.getApiClient(ApiClient.BASE_URL)!!.create(ApiInterface::class.java)
-        val call: Call<Int> = apiService.verifyValidationCode(userPhone, Code, userName)
-
-             call.enqueue(object : Callback<Int> {
-                 @SuppressLint("UseCompatLoadingForDrawables")
-
-                 override fun onResponse(call: Call<Int>, response: Response<Int>) {
-
-                     if (response.isSuccessful) {
-                         if (response.body() == 1) {
-                             //  verifyAccountType(userPhone,userName)
-                             liveData.value = response.body()!!
-
-
-
-                         } else {
+                        } else {
 //                        newUser_validCode_layout.isErrorEnabled = true
 //                        newUser_validCode_layout.error = "کد نامعتبر است"
-                             liveData.value = response.body()!!
-                             liveDataInvalidCode.value=response.body()!!
-                             Log.d("hexxxx", "onResponse: ${liveData.value}")
-                             Log.d("rexxxx", "onResponse: ${liveDataInvalidCode.value}")
+                            liveData.value = response.body()!!
+                            liveDataInvalidCode.value = response.body()!!
+                            Log.d("hexxxx", "onResponse: ${liveData.value}")
+                            Log.d("rexxxx", "onResponse: ${liveDataInvalidCode.value}")
 
 
-                         }
-                     }
-                 }
+                        }
+                    }
+                }
 
-                 override fun onFailure(call: Call<Int>, t: Throwable) {
-                     Log.d("hexxxx", "onResponse: " + t)
-                 }
+                override fun onFailure(call: Call<Int>, t: Throwable) {
+                    Log.d("hexxxx", "onResponse: " + t)
+                }
 
-             })
+            })
 
-             return liveData
 
+        }
+        task.join()
+
+        return liveData
     }
 
-  public  fun getter():LiveData<Int>{
+    public fun getter(): LiveData<Int> {
         return liveDataInvalidCode
     }
 
@@ -133,13 +144,6 @@ class Repository {
 //    }
 //
 //
-
-
-
-
-
-
-
 
 
 }

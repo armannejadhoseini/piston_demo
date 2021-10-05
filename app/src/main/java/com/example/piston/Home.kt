@@ -27,7 +27,7 @@ import com.example.piston.R
 import com.example.piston.ui.theme.PistonTheme
 
 @Composable
-fun HomeLayout(navController: NavController) {
+fun Home(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()

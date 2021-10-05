@@ -12,10 +12,12 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key.Companion.Home
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -26,7 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.data.*
-import com.example.piston.presenter.HomeLayout
+import com.example.piston.presenter.Home
 import com.example.piston.ui.Quize.QuizPage
 import com.example.piston.ui.theme.ReadingPage
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -44,9 +46,9 @@ class MainActivity : ComponentActivity() {
         viewModel.getTheoryListFromDb()
         viewModel.getPracticalListFromDb()
 
-        val viewModelRetrofit:ViewModelRetrofit by viewModels()
-        viewModelRetrofit.verifyCode("09361051762","35496","ali")
-        viewModelRetrofit.invalidCode.observe(this){
+        val viewModelRetrofit: ViewModelRetrofit by viewModels()
+        viewModelRetrofit.verifyCode("09106967480", "87793", "shr")
+        viewModelRetrofit.invalidCode.observe(this) {
             Log.i("TAG000", "onCreate: $it")
         }
 
@@ -172,38 +174,62 @@ class MainActivity : ComponentActivity() {
 
                 composable(
                     route = Screen.SignInVerifyCode.route + "/{fullName}/{phone}",
-                    arguments = listOf(navArgument("fullName") { type = NavType.StringType },
+                    arguments = listOf(navArgument("fullName") {
+                        type = NavType.StringType
+                    },
                         navArgument("phone") {
                             type = NavType.StringType
                         })
-                )
+//                        //, (navArgument("code") {
+//                            type = NavType.StringType
+//                        })
 
-                { navBackStack ->
-                    val fullName = navBackStack.arguments?.getString("fullName")
+                ) { navBackStackEntry ->
                     SignInVerifyCode(
                         navController,
-                        fullNameInputed = fullName,
-                        phoneInputed = navBackStack.arguments?.getString("phone")
+                        fullNameInputed = navBackStackEntry.arguments?.getString("fullName"),
+                        phoneInputed = navBackStackEntry.arguments?.getString("phone"), ""
                     )
                 }
+                composable(
+                    route = Screen.SignInVerifyCode1.route + "/{fullName}/{phone}/{code}",
+                    arguments = listOf(navArgument("fullName") {
+                        type = NavType.StringType
+                    },
+                        navArgument("phone") {
+                            type = NavType.StringType
+                        }, (navArgument("code") {
+                            type = NavType.StringType
+                        })
+                    )
+
+                ) { navBackStackEntry ->
+                    SignInVerifyCode(
+                        navController,
+                        fullNameInputed = navBackStackEntry.arguments?.getString("fullName"),
+                        phoneInputed = navBackStackEntry.arguments?.getString("phone"),
+                        codeInputed = navBackStackEntry.arguments?.getString("code")
+                    )
+                }
+
+
             }
         }
     }
-
-    @Composable
-    fun Home(navController: NavController) {
-        SignIn(navController)
-    }
-
-    @ExperimentalFoundationApi
-    @ExperimentalPagerApi
-    @Composable
-    fun Quizes() {
-        QuizPage()
-    }
-
-
 }
+
+
+@ExperimentalFoundationApi
+@ExperimentalPagerApi
+@Composable
+fun Quizes() {
+    QuizPage()
+}
+
+
+
+
+
 
 
 

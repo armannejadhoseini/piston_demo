@@ -191,7 +191,7 @@ fun SignIn(navController: NavController) {
                 onClick = {
                     //    resultText  =viewModelRetrofit.getCode(phone)
                     resultText = viewModelRetrofit.getCode(phone)
-                   navController.navigate(Screen.SignInVerifyCode.route+"/$fullName/$phone"  )
+                   navController.navigate(Screen.SignInVerifyCode.route+"/$fullName/$phone" )
 
 
 

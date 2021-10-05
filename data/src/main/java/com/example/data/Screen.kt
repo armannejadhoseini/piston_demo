@@ -7,4 +7,6 @@ sealed class Screen(val route: String, val title: String, val icon: Int) {
     object More : Screen("More", "More", R.drawable.ic_category)
     object SignIn : Screen("SignIn", "SignIn", R.drawable.ic_category)
     object SignInVerifyCode : Screen("SignInVerifyCode", "SignInVerifyCode", R.drawable.ic_category)
+    object SignInVerifyCode1 : Screen("SignInVerifyCode", "SignInVerifyCode", R.drawable.ic_category)
+
 }

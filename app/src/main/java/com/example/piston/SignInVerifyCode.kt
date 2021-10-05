@@ -1,16 +1,19 @@
 package com.example.piston
 
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -18,9 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.data.Screen
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -29,13 +34,17 @@ import kotlinx.coroutines.launch
 fun SignInVerifyCode(
     navController: NavController,
     fullNameInputed: String?,
-    phoneInputed: String?
+    phoneInputed: String?,
+    codeInputed: String?
+
 ) {
     val viewModelRetrofit: ViewModelRetrofit = viewModel()
+    var LifecycleOwner = LocalLifecycleOwner.current
+    var phone:String?=     phoneInputed
+    var fullName:String?=fullNameInputed
+    var code by rememberSaveable { mutableStateOf("") }
+    val b=true
 
-    var phone by remember { mutableStateOf("") }
-    var fullName by remember { mutableStateOf("") }
-    var code by remember { mutableStateOf("") }
     var checkCode: Int? = null
     var codePlaceHolderText: String by remember {
         mutableStateOf("کد دریافتی")
@@ -167,6 +176,37 @@ fun SignInVerifyCode(
 
 
             OutlinedTextField(
+                value = code,
+                onValueChange = { newValue ->
+                    code = newValue},
+                placeholder = {
+                    Text(
+                        codePlaceHolderText,
+                        modifier = Modifier.padding(90.dp, 0.dp)
+                    )
+                    Icon(
+
+                        painterResource(R.drawable.ic_phone),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(25.dp),
+                        tint = colorResource(id = R.color.gray)
+
+                    )
+                }
+            )
+
+        }
+        Spacer(modifier = Modifier.padding(10.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(51.dp), horizontalArrangement = Arrangement.Center
+
+        ) {
+
+
+            OutlinedTextField(
                 value = phoneInputed!!,
                 onValueChange = { newValue ->
                     phone = phoneInputed
@@ -190,7 +230,6 @@ fun SignInVerifyCode(
             )
 
         }
-        Spacer(modifier = Modifier.padding(10.dp))
 
 //        if (checkCode == 0) {
 //            code = ""
@@ -215,21 +254,41 @@ fun SignInVerifyCode(
             horizontalArrangement = Arrangement.Center
         ) {
 
+            var LifecycleOwner = LocalLifecycleOwner.current
+            val coroutineScope = rememberCoroutineScope()
+
             Button(
-                onClick = {
-                    //    resultText  =viewModelRetrofit.getCode(phone)
 
-                    GlobalScope.launch {
 
-//                       viewModelRetrofit.verifyCode(phone, code, fullName)
-//                        checkCode = viewModelRetrofit.getter()
-//                        Log.d("checkkk", "SignInVerifyCode: "+checkCode)
+                        onClick = {
+                            Log.d("bb1", "onCreate: $code")
 
+                  coroutineScope.launch(Dispatchers.Unconfined)
+                  {if(b){
+                        Log.d("bb", "onCreate: $code")
+                        viewModelRetrofit.verifyCode(phone!!, code, fullName!! )
+
+                        viewModelRetrofit.invalidCode.observe(LifecycleOwner) {
+                            Log.d("TAG000", "onCreate: $it")
+                            if(it==0)
+                            {
+                                codePlaceHolderText = "کد نامعتبر"
+                                code = ""
+                            }
+                            if(it==1)
+                            {
+
+                                code = "ok"
+                            }
+                        }
+
+                        }
 
                     }
-                    codePlaceHolderText = "کد نامعتبر"
-                    code = ""
-                    // navController.navigate("SignInInvalidCode/{$fullName}/{$phone}")
+
+
+                    //    resultText  =viewModelRetrofit.getCode(phone)
+                    //  navController.navigate(Screen.SignInVerifyCode.route+"/$fullName/$phone"+codeInputed  )
 
 
                 },
@@ -237,8 +296,6 @@ fun SignInVerifyCode(
                 modifier = Modifier
                     .width(330.dp)
                     .height(45.dp)
-
-
             )
             {
                 //Text(text = "خرید",style = MaterialTheme.typography.h6)
@@ -256,4 +313,3 @@ fun SignInVerifyCode(
     }
 
 }
-
