@@ -19,8 +19,11 @@ class ViewModelRetrofit(application: Application) : AndroidViewModel(application
 
 
     lateinit private var code: String
+
     // val liveData: MutableLiveData<String> = MutableLiveData<String>()
-  public  var invalidCode = MutableLiveData<Int>()
+    public var invalidCode = MutableLiveData<Int>()
+  public  var  liveDataAccType = MutableLiveData<Int>()
+
 
     fun getCode(phone1: String): String {
         code = Repository().requestToSendValidationCode(phone1).toString()
@@ -29,23 +32,18 @@ class ViewModelRetrofit(application: Application) : AndroidViewModel(application
     }
 
 
-
-    fun verifyCode(phone: String, code: String, fullName: String){
+    fun verifyCode(phone: String, code: String, fullName: String) {
         viewModelScope.launch {
             invalidCode = (Repository().requestVerifyValidationCode(phone, code, fullName))
-            Log.d("TAG", "verifyCode: ${invalidCode.value}")
-//            val checkCode = getInvalidCode()
+            Log.d("invalidViewModel", " ${invalidCode.value}")
 
-//            Log.d("TAG", "verifyCode: ${checkCode.value}")
+            liveDataAccType=(Repository().verifyAccountType(phone,fullName))
+            Log.d("verifyCodeViewModel", " ${liveDataAccType.value}")
+
+
+
         }
-//        return getInvalidCode()
-    }
 
-    //    fun getter():LiveData<Int>{
-//        return che
-//    }
-    fun getInvalidCode(): LiveData<Int> {
-        return Repository().getter()
     }
 
 

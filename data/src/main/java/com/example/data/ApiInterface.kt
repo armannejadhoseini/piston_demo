@@ -1,6 +1,7 @@
 package com.example.data
 
 //import ir.rahnama.pistoon.model.apiModel.*
+import com.example.data.entities.apiModel.VerifyAccountModel
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -73,9 +74,9 @@ interface ApiInterface {
     fun savePaymentInfo( @Field("phone") phone :String , @Field("pay_number") pay_number :String , @Field("discount_code") discount_code :String, @Field("acc_type") acc_type :Int):Call<Void>
 
 
-//    @POST("verifyAccount.php")
-//    @FormUrlEncoded
-//    fun verifyAccount( @Field("phone") phone :String):Call<List<VerifyAccountModel>>
-//
+    @POST("verifyAccount.php")
+    @FormUrlEncoded
+    fun verifyAccount( @Field("phone") phone :String):Call<List<VerifyAccountModel>>
+
 
 }

@@ -1,6 +1,7 @@
 package com.example.data
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -10,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
 import retrofit2.Call
 import retrofit2.Callback
@@ -73,12 +75,8 @@ class Repository {
 
                     if (response.isSuccessful) {
                         if (response.body() == 1) {
-                            //  verifyAccountType(userPhone,userName)
-                            liveData.value = response.body()!!
-                            Log.d("Fexxxx", "onResponse: ${liveData.value}")
 
-
-                        } else {
+                             runBlocking { verifyAccountType(userPhone,userName)}
 //                        newUser_validCode_layout.isErrorEnabled = true
 //                        newUser_validCode_layout.error = "کد نامعتبر است"
                             liveData.value = response.body()!!
@@ -109,41 +107,52 @@ class Repository {
     }
 
 
+ suspend    fun verifyAccountType(userPhone: String, userName: String):MutableLiveData<Int> {
+
+     //   val bundle = Bundle()
+
+      val  liveDataAccType = MutableLiveData<Int>()
+
+        val task1 = GlobalScope.launch(Dispatchers.IO) {
+            val apiService: ApiInterface = ApiClient.getApiClient(ApiClient.BASE_URL)!!.create(ApiInterface::class.java)
+            val call: Call<List<VerifyAccountModel>> = apiService.verifyAccount(userPhone)
+            call.enqueue(object : Callback<List<VerifyAccountModel>> {
+                @SuppressLint("UseCompatLoadingForDrawables")
+                override fun onResponse(
+                    call: Call<List<VerifyAccountModel>>,
+                    response: Response<List<VerifyAccountModel>>
+                ) {
+                    if (response.isSuccessful) {
+                        liveDataAccType.value=response.body()!![0].acc_type
+                        Log.d("liveDataAccType", "onResponse: " +liveDataAccType.value)
+//                    if (response.body()!![0].acc_type == 1) {
+//                        //   Hawk.put("fullAccount",20)
+//                        bundle.putInt("fullAccount", 20)
+//                    } else if (response.body()!![0].acc_type == 2) {
+//                        //   Hawk.put("goldenAccount",10)
+//                        bundle.putInt("goldenAccount", 10)
 //
-//    private fun verifyAccountType(userPhone: String,userName: String){
-//
-//
-//
-//        val apiService: ApiInterface = ApiClient.getApiClient(ApiClient.BASE_URL)!!.create(ApiInterface::class.java)
-//        val call: Call<List<VerifyAccountModel>> = apiService.verifyAccount(userPhone)
-//        call.enqueue(object : Callback<List<VerifyAccountModel>> {
-//            @SuppressLint("UseCompatLoadingForDrawables")
-//            override fun onResponse(call: Call<List<VerifyAccountModel>>, response: Response<List<VerifyAccountModel>>) {
-//                if (response.isSuccessful) {
-//                    if (response.body()!![0].acc_type == 1){
-//                        Hawk.put("fullAccount",20)
-//                    }else if (response.body()!![0].acc_type == 2 ){
-//                        Hawk.put("goldenAccount",10)
 //                    }
-//                    Hawk.put("logIn", 1)
-//                    Hawk.put("userName", userName)
-//                    Hawk.put("userPhone", userPhone)
-//                    HideSignInLayoutAnimation()
-//                    initPage()
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<List<VerifyAccountModel>>, t: Throwable) {
+//                    bundle.putInt("logIn", 1)
+//                    bundle.putString("userName", userName)
+//                    bundle.putString("userPhone", userPhone)
+                        //  HideSignInLayoutAnimation()
+                        //initPage()
+                    }
+                }
+
+                override fun onFailure(call: Call<List<VerifyAccountModel>>, t: Throwable) {
 //                Toast.makeText(requireActivity(), "لطفا دوباره تلاش کنید", Toast.LENGTH_SHORT)
 //                    .show()
-//            }
-//
-//        })
-//
-//
-//    }
-//
-//
+                }
+
+            })
+
+        }
+
+      task1.join()
+     return liveDataAccType
+    }
 
 
 }
